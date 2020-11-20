@@ -1,3 +1,9 @@
+"""字符串输出问题"""
+# 如果想输出: Let's go!
+print('let\'s go!')  # 采用 \' 转义符输出
+print("let's go!")  # 采用 " ' " 来显示出 '
+
+'''-----------------------------------------------------------------------------------'''
 """
 Python split() 通过指定分隔符对字符串进行切片，
 如果参数 num 有指定值，则分隔 num+1 个子字符串
@@ -9,9 +15,9 @@ num -- 分割次数。默认为 -1, 即分隔所有。
 返回值
 返回分割后的字符串列表。
 """
-str = "Line1-abcdef \nLine2-abc \nLine4-abcd"
-print(str.split())        # 以空格为分隔符，包含 \n
-print(str.split(' ', 1))  # 以空格为分隔符，分隔成两个
+str_1 = "Line1-abcdef \nLine2-abc \nLine4-abcd"
+print(str_1.split())        # 以空格为分隔符，包含 \n
+print(str_1.split(' ', 1))  # 以空格为分隔符，分隔成两个
 """
 ['Line1-abcdef', 'Line2-abc', 'Line4-abcd']
 ['Line1-abcdef', '\nLine2-abc \nLine4-abcd']

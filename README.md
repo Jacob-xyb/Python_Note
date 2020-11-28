@@ -1,5 +1,9 @@
 # Python_Note
 Python Personal Notes
+## 0XX
+比较杂乱的东西
+## 1XX
+开发过程中的随笔
 ## 8XX
 python 函数模块说明文档
 ## 90X

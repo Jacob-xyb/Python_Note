@@ -342,3 +342,43 @@ print ("扩展后的列表：", list4_6)  # 一个列表被整合到list中了
 
     扩展后的列表： ['Google', 'Runoob', 'Taobao', 0, 1, 2, 3, 4]
     
+
+## list 的加减乘除
+
+### list的加法
+
+- list的加法好像是直接将列表添加到后面，不，应该是扩展到后面。
+- list的加法是深复制哦~
+
+
+```python
+list5 = [1, 2, 3]
+list5_1 = [1, 2, 3]
+list5_2 = list5 + list5_1 
+print(list5_2, id(list5_2))
+list5_1.pop()
+print(list5_2, id(list5_2))
+```
+
+    [1, 2, 3, 1, 2, 3] 2202586639616
+    [1, 2, 3, 1, 2, 3] 2202586639616
+    
+
+### 所以减乘除都没有咯
+
+
+```python
+print([1,2,3]-[1,1,1])  # 果然报错了~
+```
+
+
+    ---------------------------------------------------------------------------
+
+    TypeError                                 Traceback (most recent call last)
+
+    <ipython-input-14-0a6a8298db3f> in <module>
+    ----> 1 print([1,2,3]-[1,1,1])  # 果然报错了~
+    
+
+    TypeError: unsupported operand type(s) for -: 'list' and 'list'
+

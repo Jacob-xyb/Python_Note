@@ -275,7 +275,7 @@ def palchecker(aString):
     stillEqual = True
     while chardeque.size() > 1 and stillEqual:
         first = chardeque.removeRear()
-        last = chardeque.addFront()
+        last = chardeque.removeFront()
         if first != last:
             stillEqual = False
     return stillEqual

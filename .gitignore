@@ -1,10 +1,23 @@
 # idea
 .idea/
 
-# file
-/000_testfile.py
+# data
+data/
 
+# file
+*.xlsx
+*.png
+*.csv
+*.pdf
+*.rar
+*.zip
+*.jpg
+*.txt
 
 # dir
 # 忽略.ipynb_checkpoints 下所有内容
 **/*.ipynb_checkpoints/
+
+000_testfile.py
+test.py
+test.ipynb

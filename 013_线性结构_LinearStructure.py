@@ -312,7 +312,7 @@ class Unorderedlist:
     def isEmpty(self):
         return self.head == None
 
-    def add(self, item):
+    def add(self, item):  # 这里注意顺序一定不能乱，先设置暂存temp的next节点，再将表头指向temp
         temp = Node(item)
         temp.setNext(self.head)
         self.head = temp

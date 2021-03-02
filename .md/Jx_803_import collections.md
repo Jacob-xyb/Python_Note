@@ -64,6 +64,18 @@ print(count - count_1)
     Counter({'l': 1, 'o': 1, ' ': 1, 'w': 1, 'r': 1, 'd': 1})
     
 
+- 长-短可以，但是短-长就会为空
+
+
+```python
+print('count_1 - count:',count_1 - count)
+print('count - count_1:',count - count_1)
+```
+
+    count_1 - count: Counter()
+    count - count_1: Counter({'l': 1, 'o': 1, ' ': 1, 'w': 1, 'r': 1, 'd': 1})
+    
+
 - ```Counter```可以转换为```list```，是```key```的列表
 - ```Counter```可以转换为```dict```
     - 有趣的是```Counter```的key顺序是按value大小排列的，```dict```的key顺序是按数据源顺序排列的
@@ -80,6 +92,34 @@ print(res_list, res_dict)
 
     Counter({'l': 3, 'o': 2, 'h': 1, 'e': 1, ' ': 1, 'w': 1, 'r': 1, 'd': 1})
     ['h', 'e', 'l', 'o', ' ', 'w', 'r', 'd'] {'h': 1, 'e': 1, 'l': 3, 'o': 2, ' ': 1, 'w': 1, 'r': 1, 'd': 1}
+    
+
+### .most_common()
+__parameter（参数）:__
+        传进去一个可选参数n(代表获取数量最多的前n个元素，如果不传参数，代表返回所有结果)  
+__return（返回）：__
+        返回一个列表（里面的元素是一个元组，元组第0位是被计数的具体元素，元组的第1位是出现的次数，如：[('a',1),[('b'),2],[('c',3)]]）当多个元素计数值相同时，按照字母序排列。
+
+
+```python
+s = "hello world"
+count = Counter(s)
+print(count.most_common())
+print(count.most_common(2))
+```
+
+    [('l', 3), ('o', 2), ('h', 1), ('e', 1), (' ', 1), ('w', 1), ('r', 1), ('d', 1)]
+    [('l', 3), ('o', 2)]
+    
+
+
+```python
+print(count.most_common(1))
+print(count.most_common(1)[0][1])
+```
+
+    [('l', 3)]
+    3
     
 
 ### 案例

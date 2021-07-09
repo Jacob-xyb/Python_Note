@@ -2,6 +2,7 @@
 Python Personal Notes
 ## 0XX
 比较杂乱的东西
+- [Jx_000_python:记录了一些有关python的网址，有学习的有杂谈等等，重读率很高的就会记录进来](https://github.com/Jacob-xyb/Python_Note/blob/master/.md/Jx_000_python.md)
 ## 1XX
 开发过程中的随笔
 ## 8XX

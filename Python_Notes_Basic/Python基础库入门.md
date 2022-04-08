@@ -211,11 +211,11 @@ l2 = [1, 2]: 80
 - 元组分析
 
 ```python
-# TODO：前期的处理比较难理解
+# 元组的空间分配就很线性
 t1 = ()
 print("t1 = ():", t1.__sizeof__())
-t1 = (1)
-print("t1 = (1):", t1.__sizeof__())
+t1 = (1,)
+print("t1 = (1,):", t1.__sizeof__())
 t1 = (1, 2)
 print("t1 = (1, 2):", t1.__sizeof__())
 t1 = (1, 2, 3)
@@ -227,7 +227,7 @@ print("t1 = (1, 2, 3, 4, 5):", t1.__sizeof__())
 
 '''
 t1 = (): 24
-t1 = (1): 28
+t1 = (1): 32
 t1 = (1, 2): 40
 t1 = (1, 2, 3): 48
 t1 = (1, 2, 3, 4): 56
@@ -275,7 +275,24 @@ l = [0, 1, 2, 3, 4]
 del l[2]
 print(l)
 # [0, 1, 3, 4]
+
+l = [0, 1, 2, 3, 4]
+del l[:]
+print(l)
+# []
 ```
+
+报错：
+
+```python
+# 注意：del 整个对象后，对象就不存在了
+l = [0, 1, 2, 3, 4]
+del l
+print(l)
+# NameError: name 'l' is not defined
+```
+
+
 
 #### len(l): 返回列表长度
 
@@ -473,4 +490,167 @@ l = [0, 1, 2, 3]
 print(l.pop())		# 3
 print(l)			# [0, 1, 2]
 ```
+
+当然也可以指定 index 删除特定的元素
+
+```python
+l = [0, 1, 2, 3]
+print(l.pop(2))		# 2
+print(l)			# [0, 1, 3]
+```
+
+报错：
+
+```python
+# list.pop()
+l = [0, 1, 2, 3]
+print(l.pop(5))
+# IndexError: pop index out of range
+```
+
+#### list.remove(obj)
+
+remove() 函数用于**移除列表中某个值的第一个匹配项**。
+
+语法：`list.remove(obj)`
+
+返回：无返回值。
+
+```python
+l = [0, 1, 2, 3, 0]
+l.remove(0)
+l		# [1, 2, 3, 0]
+```
+
+报错：
+
+```python
+# 1.if obj not in list
+l = [0, 1, 2, 3, 0]
+l.remove(4)
+# ValueError: list.remove(x): x not in list
+```
+
+#### list.reverse()
+
+reverse() 函数用于反向列表中元素。
+
+```python
+l = [0, 3, 5, 1]
+l.reverse()
+l		# [1, 5, 3, 0]
+```
+
+#### list.sort()
+
+sort() 函数用于对原列表进行排序，如果指定参数，则使用比较函数指定的比较函数。
+
+语法：`list.sort( key=None, reverse=False)`
+
+参数：
+
+- key -- 主要是用来进行比较的元素，只有一个参数，具体的函数的参数就是取自于可迭代对象中，指定可迭代对象中的一个元素来进行排序。
+- reverse -- 排序规则，**reverse = True** 降序， **reverse = False** 升序（默认）。
+
+最基本用法：
+
+```python
+l = [0, 3, 5, 1]
+l.sort()
+l		# [0, 1, 3, 5]
+l.sort(reverse=True)
+l		# [5, 3, 1, 0]
+```
+
+进阶用法：
+
+1. 层叠列表
+
+```python
+# key 可以选择固定位置
+l = [(1, 3), (4, 7), (0, 4), (2, 9)]
+l.sort(key=lambda x : x[1])
+print(l)	# [(1, 3), (0, 4), (4, 7), (2, 9)]
+l.sort(key=lambda x : x[1], reverse=True)
+print(l)	# [(2, 9), (4, 7), (0, 4), (1, 3)]
+l.sort(key=lambda x : x[0])
+print(l)	# [(0, 4), (1, 3), (2, 9), (4, 7)]
+```
+
+2. 字典
+
+   字典用起来就稍显复杂，比字典更复杂的类型以此类推
+
+```python
+l = [{1: 3}, {4: 7}, {0: 4}, {2: 9}]
+l.sort(key=lambda x : list(x.keys())[0])
+print(l)	# [{0: 4}, {1: 3}, {2: 9}, {4: 7}]
+```
+
+#### list.clear()
+
+clear() 函数用于清空列表，类似于 `del a[:]` 。
+
+```python
+l = [0, 1, 2, 3]
+l.clear()
+l	# []
+```
+
+#### list.copy()
+
+copy() 函数用于复制列表，类似于 **a[:]**。
+
+理解深浅拷贝就很容易掌握
+
+```python
+l = [0, 1, 2, 3]
+l1 = l			# 浅拷贝
+l1[0] = -1
+print(l)		# [-1, 1, 2, 3]
+
+l = [0, 1, 2, 3]
+l2 = l[:]		# 深拷贝
+l2[0] = -1
+print(l)		# [0, 1, 2, 3]
+
+l = [0, 1, 2, 3]
+l3 = l.copy()	# 深拷贝
+l3[0] = -1
+print(l)  		# [0, 1, 2, 3]
+```
+
+### Tuple 函数一览
+
+元组的函数 几乎被 列表给覆盖，唯一区别就是使元组发生改变的函数元组没有。
+
+#### 初始化
+
+元组中只包含一个元素时，需要在元素后面添加逗号 `,` ，否则括号会被当作运算符使用：
+
+```python
+t = ()
+print(type(t))		# <class 'tuple'>
+t = (1)
+print(type(t))		# <class 'int'>
+t = (1,)
+print(type(t))		# <class 'tuple'>
+
+# 当然不需要括号也是可以的
+t = 1, 2, 3, 4, 5
+print(type(t))		# <class 'tuple'>
+```
+
+#### +: 拼接元组
+
+元组中的元素值是不允许修改的，但我们可以对元组进行连接组合。
+
+```python
+tup1 = (12, 34.56)
+tup2 = ('abc', 'xyz')
+tup3 = tup1 + tup2
+print (tup3)		# (12, 34.56, 'abc', 'xyz')
+```
+
+
 

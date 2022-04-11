@@ -652,5 +652,98 @@ tup3 = tup1 + tup2
 print (tup3)		# (12, 34.56, 'abc', 'xyz')
 ```
 
+## 字典和集合
 
+### 基础
+
+究竟什么是字典，什么是集合呢？
+
+字典是一系列由键（key）和值（value）配对组成的元素的集合，在 Python3.7+，字典被确定为有序（注意：在 3.6 中，字典有序是一个implementation detail，在 3.7 才正式成为语言特性，因此 3.6 中无法 100% 确保其有序性），而 3.6 之前是无序的，其长度大小可变，元素可以任意地删减和改变。
+
+相比于列表和元组，字典的性能更优，特别是对于查找、添加和删除操作，字典都能在常数时间复杂度内完成。
+
+而集合和字典基本相同，唯一的区别，就是集合没有键和值的配对，是一系列无序的、唯一的元素组合。
+
+####  初始化
+
+首先我们来看字典和集合的创建，通常有下面这几种方式：
+
+字典：
+
+```python
+1 = {'name': 'jason', 'age': 20, 'gender': 'male'}
+d2 = dict({'name': 'jason', 'age': 20, 'gender': 'male'})
+d3 = dict([('name', 'jason'), ('age', 20), ('gender', 'male')])
+d4 = dict(name='jason', age=20, gender='male')
+d1 == d2 == d3 ==d4		# True
+```
+
+集合：
+
+```python
+s1 = {1, 2, 3}
+s2 = set([1, 2, 3])
+s1 == s2							# True
+```
+
+#### 判断是否存在
+
+- 字典
+
+    in 对于 dict 而言，只能判断 key 是否存在，不能判断 value 是否存在。
+
+```python
+d = {'name': 'jason', 'age': 20}
+print("name" in d)		# True
+print("jason" in d)		# False
+```
+
+- 集合
+
+    集合的判断就相对简单。
+
+```python
+s = {1, 2, 3}
+print(1 in s)		# True
+print(10 in s)		# False
+```
+
+### 增删查改
+
+#### 查
+
+- 字典
+
+    1. 直接用 [] 操作符查询：
+
+    注意查询不存在的键值时会抛出异常。
+
+    ```python
+    d = {'name': 'jacob', 'age': 20}
+    print(d["name"])		# jacob
+    print(d["location"])		# KeyError: 'location'
+    ```
+
+    2. 采用 get(key, default)  函数查询：
+
+        如果键不存在，调用 get() 函数可以返回一个默认值。
+
+    ```python
+    d = {'name': 'jacob', 'age': 20}
+    print(d.get("name"))				# jacob
+    print(d.get("location"))			# None
+    print(d.get("location", "null"))	# null
+    ```
+
+- 集合
+
+    集合并不支持索引，因为集合本质上是一个哈希表。
+
+    对集合采用索引，会抛出异常。
+
+	```python
+	s = {1, 2, 3}
+	s[0]
+	# TypeError: 'set' object is not subscriptable
+	```
 

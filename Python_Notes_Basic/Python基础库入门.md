@@ -620,6 +620,28 @@ l3[0] = -1
 print(l)  		# [0, 1, 2, 3]
 ```
 
+进阶理解深浅拷贝
+
+```python
+l = ['0', [0, 1, 2, 3], ['x', 'y', 'z']]
+
+# python 所有容器基本遵循一下规则
+l1 = l    		# 浅拷贝：引用对象，会随原对象改变而改变
+l2 = l[:]		# 浅拷贝： 深拷贝父对象（一级目录），子对象（二级目录）不拷贝，子对象是引用
+l3 = l.copy()  	# 浅拷贝： 深拷贝父对象（一级目录），子对象（二级目录）不拷贝，子对象是引用
+# 深拷贝需要引入 copy 模块
+import copy
+l4 = copy.deepcopy(l)
+
+l[0] = '1'
+l[1].remove(0)
+
+print(l1)		# ['1', [1, 2, 3], ['x', 'y', 'z']]
+print(l2)		# ['0', [1, 2, 3], ['x', 'y', 'z']]
+print(l3)		# ['0', [1, 2, 3], ['x', 'y', 'z']]
+print(l4)		# ['0', [0, 1, 2, 3], ['x', 'y', 'z']]
+```
+
 ### Tuple 函数一览
 
 元组的函数 几乎被 列表给覆盖，唯一区别就是使元组发生改变的函数元组没有。
@@ -669,6 +691,14 @@ print (tup3)		# (12, 34.56, 'abc', 'xyz')
 首先我们来看字典和集合的创建，通常有下面这几种方式：
 
 字典：
+
+字典是另一种可变容器模型，且可存储任意类型对象。
+
+字典的每个键值 **key=>value** 对用冒号 **:** 分割，每个对之间用逗号(**,**)分割，整个字典包括在花括号 **{}** 中 ,格式如下所示：
+
+`d = {key1 : value1, key2 : value2, key3 : value3 }`
+
+**注意：** **dict** 作为 Python 的关键字和内置函数，变量名不建议命名为 **dict**。
 
 ```python
 1 = {'name': 'jason', 'age': 20, 'gender': 'male'}
@@ -746,4 +776,157 @@ print(10 in s)		# False
 	s[0]
 	# TypeError: 'set' object is not subscriptable
 	```
+
+#### 增和改
+
+字典的增和改是相同的操作
+
+```python
+d = {'name': 'jacob', 'age': 20}
+d["gender"] = "male"
+print(d)		# {'name': 'jacob', 'age': 20, 'gender': 'male'}
+d["age"] = 18
+print(d)		# {'name': 'jacob', 'age': 18, 'gender': 'male'}
+```
+
+集合只能增加和删除，没法直接改元素
+
+```python
+s = {1, 2, 3, 4, 5}
+s.add(6)
+print(s)		# {1, 2, 3, 4, 5, 6}
+# 集合是不重合的元素，因此 add 重复的元素不会报错，但是无效的
+s.add(6)
+print(s)		# {1, 2, 3, 4, 5, 6}
+```
+
+#### 删
+
+`pop()` 和 `del`
+
+```python
+d = {'name': 'jacob', 'age': 20, 'gender': 'male'}
+print(d.pop("gender"))	# male
+print(d)				# {'name': 'jacob', 'age': 18}
+del d["age"]
+print(d)				# {'name': 'jacob'}
+
+del d["a"]		# KeyError: 'a'
+
+d.clear()		# 清空
+print(d)				# {}
+```
+
+`remove()` 和 `pop()`
+
+```python
+s = {1, 2, 3, 4, 5, 6}
+s.remove(6)
+print(s)		# {1, 2, 3, 4, 5}
+
+# error
+s.remove(7)		# KeyError: 7
+
+s.clear()		# 清空
+print(s)		# set()
+
+# 不过要注意，集合的 pop() 操作是删除集合中最后一个元素，可是集合本身是无序的，你无法知道会删除哪个元素，因此这个操作得谨慎使用
+s = {1, 4, 5, 2}
+s.pop()		# 1
+s = {4, 1, 2, 3}
+s.pop()		# 1
+```
+
+### Dict 函数一览
+
+#### len(dict)、str(dict)、type(variable)
+
+```python
+d =  {'Name': 'Jacob', 'Age': 18, 'Class': 'First'}
+
+# len(dict) 计算字典元素个数，即键的总数。
+print(len(d))		# 3
+
+# str(dict) 字符串化字典
+print(str(d))		# "{'Name': 'Jacob', 'Age': 18, 'Class': 'First'}"
+
+# type(dict) 输出类型
+print(type(d))		# <class 'dict'>
+```
+
+#### dict.items()
+
+**Python 字典 items() 方法以列表返回视图对象，是一个可遍历的key/value 对。**
+
+dict.keys()、dict.values() 和 dict.items() 返回的都是视图对象（ view objects），提供了字典实体的动态视图，这就意味着字典改变，视图也会跟着改变。
+
+视图对象不是列表，不支持索引，可以使用 list() 来转换为列表。
+
+我们不能对视图对象进行任何的修改，因为字典的视图对象都是只读的。
+
+语法：`dict.items()`
+
+```python
+d = {'Name': 'Jacob', 'Age': 18}
+print(d.items())		# dict_items([('Name', 'Jacob'), ('Age', 18)])
+for i,j in d.items():
+    print(i, "\t:", j)
+'''
+Name 	: Jacob
+Age 	: 18
+'''
+```
+
+#### TODO
+
+#### dict.copy()
+
+Python 字典 copy() 函数返回一个字典的浅复制。
+
+```python
+d =  {'user':'jacob','num':[1,2,3]}
+ 
+d1 = d          # 浅拷贝: 引用对象
+d2 = d.copy()   # 浅拷贝：深拷贝父对象（一级目录），子对象（二级目录）不拷贝，子对象是引用
+import copy
+d3 = copy.deepcopy(d)  # 深拷贝
+ 
+# 修改 data 数据
+d['user']='root'
+d['num'].remove(1)
+ 
+# 输出结果
+print(d)		# {'user': 'root', 'num': [2, 3]}
+print(d1)		# {'user': 'root', 'num': [2, 3]}
+print(d2)		# {'user': 'jacob', 'num': [2, 3]}
+print(d3)		# {'user': 'jacob', 'num': [1, 2, 3]}
+```
+
+### 补充
+
+#### 字典键的特性
+
+字典值可以是任何的 python 对象，既可以是标准的对象，也可以是用户定义的，但键不行。
+
+两个重要的点需要记住：
+
+1）不允许同一个键出现两次。创建时如果同一个键被赋值两次，后一个值会被记住，如下实例：
+
+```python
+d = {"name": "jx", "age": 18, "name": "jacob"}
+print(d)
+# {'name': 'jacob', 'age': 18}
+```
+
+2）键必须不可变，所以可以用数字，字符串或元组充当，而用列表就不行，如下实例：
+
+```python
+d = {[0]: "xxx"}
+# TypeError: unhashable type: 'list'
+
+# 元组都是可以的
+d = {(0,): "xxx"}
+print(d)
+# {(0,): 'xxx'}
+```
 

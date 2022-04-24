@@ -114,7 +114,7 @@ for line in f:
 f.close()
 ```
 
-- 第三种，
+- 第三种，一次性读完
 
 ```python
 context = ""

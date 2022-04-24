@@ -30,7 +30,7 @@
 
 不采用任何第三方库来读写文件
 
-### 读写txt
+### 写txt
 
 ```python
 filePath = "test.txt"
@@ -56,9 +56,72 @@ try try try
 ---
 
 ```python
-# 一次性写入
+# 一次性写入多行
 f = open(filePath, mode)
-f.write(context)
+for i in range(5):
+    f.write(context)
+    f.write("\n")
 f.close()
+```
+
+结果：
+
+```python
+try try try
+try try try
+try try try
+try try try
+try try try
+
+```
+
+### 读txt
+
+```python
+filePath = "test.txt"
+```
+
+- 最简单的读文件方式
+
+```python
+context = ""
+f = open(filePath, 'r')
+line = f.readline()
+while line:
+    context += line
+    line = f.readline()
+f.close()
+```
+
+结果：
+
+```python
+try try try
+try try try
+try try try
+try try try
+try try try
+
+```
+
+- 第二种，for循环读完
+
+```python
+context = ""
+f = open(filePath, 'r')
+for line in f:
+    context += line
+f.close()
+```
+
+- 第三种，
+
+```python
+context = ""
+f = open(filePath, 'r')
+lines = f.readlines()	# lines 是 list 类型
+for line in lines:
+    context += line
+    f.close()
 ```
 

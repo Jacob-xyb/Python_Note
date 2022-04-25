@@ -798,11 +798,24 @@ print(s)		# {1, 2, 3, 4, 5, 6}
 # 集合是不重合的元素，因此 add 重复的元素不会报错，但是无效的
 s.add(6)
 print(s)		# {1, 2, 3, 4, 5, 6}
+
+# 还有一个方法，也可以添加元素，且参数可以是列表，元组，字典等:
+s.update({1,7})
+print(s)		# {1, 2, 3, 4, 5, 6, 7}
+s.update([1,8], [1,4])
+print(s)		# {1, 2, 3, 4, 5, 6, 7, 8}
+# 字典比较特殊，只会更新字典的key值
+s.update({0: 9})
+print(s)		# {0, 1, 2, 3, 4, 5, 6, 7, 8}
 ```
 
 #### 删
 
-`pop()` 和 `del`
+- 字典
+
+`d.pop()` 和 `del d[]`
+
+删除前需要确认key是否存在
 
 ```python
 d = {'name': 'jacob', 'age': 20, 'gender': 'male'}
@@ -817,7 +830,9 @@ d.clear()		# 清空
 print(d)				# {}
 ```
 
-`remove()` 和 `pop()`
+- 集合
+
+`s.remove()` 和 `s.pop()`
 
 ```python
 s = {1, 2, 3, 4, 5, 6}
@@ -835,6 +850,15 @@ s = {1, 4, 5, 2}
 s.pop()		# 1
 s = {4, 1, 2, 3}
 s.pop()		# 1
+```
+
+还有个很安全的删除方法：`s.discard()`
+
+如果元素不存在，不会发生错误。
+
+```python
+s = {1, 2, 3, 4, 5, 6}
+s.discard(7)
 ```
 
 ### Dict 函数一览
@@ -877,7 +901,21 @@ Age 	: 18
 '''
 ```
 
-#### TODO
+#### dict.keys() & dict.values()
+
+```python
+d = {'user': 'jacob', 'num': [1, 2, 3]}
+print(d.keys())  # dict_keys(['user', 'num'])
+keys = d.keys()
+print(d.values())  # dict_values(['jacob', [1, 2, 3]])
+values = d.values()
+for i, j in zip(keys, values):
+    print(i, j)
+'''
+user jacob
+num [1, 2, 3]
+'''
+```
 
 #### dict.copy()
 
@@ -900,6 +938,177 @@ print(d)		# {'user': 'root', 'num': [2, 3]}
 print(d1)		# {'user': 'root', 'num': [2, 3]}
 print(d2)		# {'user': 'jacob', 'num': [2, 3]}
 print(d3)		# {'user': 'jacob', 'num': [1, 2, 3]}
+```
+
+#### dict.setdefault()
+
+语法：`dict.setdefault(key, default=None)`
+
+参数：
+
+- key -- 查找的键值。
+- default -- 键不存在时，设置的默认键值。
+
+返回：如果 key 在 字典中，返回对应的值。如果不在字典中，则插入 key 及设置的默认值 default，并返回 default ，default 默认值为 None。
+
+```python
+tinydict = {'Name': 'Runoob', 'Age': 7}
+ 
+print ("Age 键的值为 : %s" %  tinydict.setdefault('Age', None))
+print ("Sex 键的值为 : %s" %  tinydict.setdefault('Sex', None))
+print ("新字典为：", tinydict)
+
+'''
+Age 键的值为 : 7
+Sex 键的值为 : None
+新字典为： {'Age': 7, 'Name': 'Runoob', 'Sex': None}
+'''
+```
+
+**关于字典中 get() 和 setdefault() 的区别：**
+
+主要在于当查找的键值 key 不存在的时候，setdefault()函数会返回默认值并更新字典，添加键值；
+
+而 get() 函数只返回默认值，并不改变原字典。
+
+#### dict.update()
+
+语法：`dict.update(dict2)`
+
+无返回值。
+
+如果键值有重复，则 dict2 的内容更新替换到 dict 中。
+
+```python
+d1 = {'user': 'jacob', 'num': [1, 2, 3]}
+d2 = {'sex': 'female'}
+d1.update(d2)
+print(d1)
+# {'user': 'jacob', 'num': [1, 2, 3], 'sex': 'female'}
+d3 = {'user': 'xyb', 'num': [6, 6, 6]}
+d1.update(d3)
+print(d1)
+# {'user': 'xyb', 'num': [6, 6, 6], 'sex': 'female'}
+```
+
+#### pop()
+
+语法：`pop(key[,default])`
+
+参数：
+
+- **key** - 要删除的键
+- **default** - 当键 key 不存在时返回的值
+
+返回：
+
+返回被删除的值：
+
+- 如果 `key` 存在 - 删除字典中对应的元素
+- 如果 `key` 不存在 - 返回设置指定的默认值 default
+- 如果 `key` 不存在且默认值 default 没有指定 - 触发 `KeyError` 异常
+
+```python
+site= {'name': '菜鸟教程', 'alexa': 10000, 'url': 'www.runoob.com'}
+
+element = site.pop('name')
+
+print('删除的元素为:', element)
+print('字典为:', site)
+
+'''
+删除的元素为: 不存在的 key
+字典为: {'name': '菜鸟教程', 'alexa': 10000, 'url': 'www.runoob.com'}
+'''
+```
+
+#### popitem()
+
+Python 字典 popitem() 方法随机返回并删除字典中的最后一对键和值。
+
+如果字典已经为空，却调用了此方法，就报出 KeyError 异常。
+
+语法：`popitem()`
+
+返回：
+
+返回最后插入键值对(key, value 形式)，按照 LIFO（Last In First Out 后进先出法） 顺序规则，即最末尾的键值对。
+
+**注意：**在 Python3.7 之前，popitem() 方法删除并返回任意插入字典的键值对。
+
+```python
+site= {'name': '菜鸟教程', 'alexa': 10000, 'url': 'www.runoob.com'}
+
+# ('url': 'www.runoob.com') 最后插入会被删除
+result = site.popitem()
+
+print('返回值 = ', result)
+# 返回值 =  ('url', 'www.runoob.com')
+print('site = ', site)
+# site =  {'name': '菜鸟教程', 'alexa': 10000}
+
+# 插入新元素
+site['nickname'] = 'Runoob'
+print('site = ', site)
+# site =  {'name': '菜鸟教程', 'alexa': 10000, 'nickname': 'Runoob'}
+
+# 现在 ('nickname', 'Runoob') 是最后插入的元素
+result = site.popitem()
+
+print('返回值 = ', result)
+# 返回值 =  ('nickname', 'Runoob')
+print('site = ', site)
+# site =  {'name': '菜鸟教程', 'alexa': 10000}
+```
+
+### Set 函数一览
+
+#### 集合推导式
+
+Set comprehension
+
+```python
+s1 = {x for x in 'abracadabra' if x not in 'abc'}
+s1	# {'r', 'd'}
+```
+
+#### 集合运算
+
+```python
+a = set('abracadabra')
+b = set('alacazam')
+# 集合是无序的
+print(a)	# {'b', 'c', 'd', 'a', 'r'}
+print(b)	# {'m', 'c', 'z', 'l', 'a'}
+
+# a有 b没有
+print(a - b)	# {'b', 'd', 'r'}
+# a 或 b 有
+print(a | b)	# {'l', 'm', 'b', 'c', 'z', 'd', 'a', 'r'}
+# a 和 b 都有
+print(a & b)	# {'c', 'a'}
+# a b 不同时有
+print(a ^ b)	# {'b', 'm', 'z', 'l', 'd', 'r'}
+```
+
+#### len(set)
+
+返回集合长度
+
+#### set.difference()、set.difference_update()
+
+difference() 方法用于返回集合的差集，即返回的集合元素包含在第一个集合中，但不包含在第二个集合(方法的参数)中。
+
+语法：`set.difference(set2)`
+
+```python
+x = {"apple", "banana", "cherry"}
+y = {"google", "microsoft", "apple"}
+z = x.difference(y)	 
+print(z)		# {'cherry', 'banana'}
+
+# 其实就是：a有 b没有
+print(x - y)	# {'cherry', 'banana'}
 ```
 
 ### 补充
@@ -929,4 +1138,14 @@ d = {(0,): "xxx"}
 print(d)
 # {(0,): 'xxx'}
 ```
+
+#### 字典和集合的工作原理
+
+不同于其他数据结构，字典和集合的内部结构都是一张哈希表。
+
+- 对于字典而言，这张表存储了哈希值（hash）、键和值这 3 个元素。
+
+- 而对集合来说，区别就是哈希表内没有键和值的配对，只有单一的元素了。
+
+- 具体原理后期再补 # TODO
 

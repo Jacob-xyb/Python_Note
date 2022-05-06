@@ -1244,7 +1244,342 @@ TypeError: 'str' object does not support item assignment
 
 #### str.capitalize()
 
-TODO
+Python capitalize() 将字符串的第一个字母变成大写，其他字母变小写。
+
+返回值：该方法返回一个首字母大写的字符串。
+
+需要注意的是：
+
+```python
+# 1、首字符会转换成大写，其余字符会转换成小写。
+str="hello PYTHON"
+print(str.capitalize())  # Hello python
+
+# 2、首字符如果是非字母，首字母不会转换成大写，会转换成小写。
+str="123 Hello PYTHON"
+print(str.capitalize())  # 123 hello python
+```
+
+#### str.center()
+
+center() 方法返回一个指定的宽度 width 居中的字符串，fillchar 为填充的字符，默认为空格。
+
+语法：`str.center(width[, fillchar])`
+
+返回值：返回一个指定的宽度 width 居中的字符串，如果 width 小于字符串宽度直接返回字符串，否则使用 fillchar 去填充。
+
+需要注意的是：
+
+```python
+# 1、如果 width 小于字符串宽度直接返回字符串，不会截断:
+str = "[www.runoob.com]"
+print(str.center(4, '*'))	# [www.runoob.com]
+
+# 2、fillchar 默认是空格
+str = "[www.runoob.com]"
+print(str.center(20))		#   [www.runoob.com]  
+
+# 3、fillchar 只能是单个字符
+
+# 4、奇数个字符时优先向右边补*
+print('123'.center(4, '*'))		# 123*
+
+# 5、偶数个字符时优先向左边补*
+print('1234'.center(5, '*'))	# *1234
+```
+
+#### str.count()
+
+语法：`str.count(sub, start= 0,end=len(string))`
+
+```python
+str="www.runoob.com"
+sub='o'
+print (str.count(sub))			# 3
+print (str.count(sub,0,10))		# 2
+```
+
+#### str.encode() & bytes.decode()
+
+decode() 方法以指定的编码格式解码 bytes 对象。默认编码为 'utf-8'。
+
+语法：`bytes.decode(encoding="utf-8", errors="strict")`
+
+参数：
+
+- encoding -- 要使用的编码，如"UTF-8"。
+- errors -- 设置不同错误的处理方案。默认为 'strict',意为编码错误引起一个UnicodeError。 其他可能得值有 'ignore', 'replace', 'xmlcharrefreplace', 'backslashreplace' 以及通过 codecs.register_error() 注册的任何值。
+
+```python
+str = "菜鸟教程";
+str_utf8 = str.encode("UTF-8")
+str_gbk = str.encode("GBK")
+print(str)
+print("UTF-8 编码：", str_utf8)
+print("GBK 编码：", str_gbk)
+print("UTF-8 解码：", str_utf8.decode('UTF-8','strict'))
+print("GBK 解码：", str_gbk.decode('GBK','strict'))
+
+"""
+菜鸟教程
+UTF-8 编码： b'\xe8\x8f\x9c\xe9\xb8\x9f\xe6\x95\x99\xe7\xa8\x8b'
+GBK 编码： b'\xb2\xcb\xc4\xf1\xbd\xcc\xb3\xcc'
+UTF-8 解码： 菜鸟教程
+GBK 解码： 菜鸟教程
+"""
+```
+
+**UTF-8 和 GBK 的区别**
+
+**先给结论：**现在基本都用 UTF-8，建议采用这个。
+
+GB 指代的“国标”，即“国家标准”。
+
+UTF-8 是一种国际化的编码方式，包含了世界上大部分的语种文字（简体中文字、繁体中文字、英文、日文、韩文等语言），也兼容 ASCII 码。
+
+GBK 是在国家标准 GB2312 基础上扩容后兼容 GB2312 的标准（好像还不是国家标准），专门用来解决中文编码的，是双字节的，不论中英文都是双字节的。
+
+UTF－8 编码是用以解决国际上字符的一种多字节编码，它对英文使用 8 位（即一个字节），中文使用 24 位（三个字节）来编码。
+
+对于英文字符较多的论坛则用 UTF－8 节省空间。
+
+另外，如果是外国人访问你的 GBK 网页，需要下载中文语言包支持。访问 UTF-8 编码的网页则不出现这问题，可以直接访问。
+
+GBK 包含全部中文字符。
+
+UTF-8 则包含全世界所有国家需要用到的字符。
+
+#### str.endswith()
+
+endswith() 方法用于判断字符串是否以指定后缀结尾，如果以指定后缀结尾返回 True，否则返回 False。可选参数 "start" 与 "end" 为检索字符串的开始与结束位置。
+
+语法：`str.endswith(suffix[, start[, end]])`
+
+#### str.expandtabs()
+
+expandtabs() 方法把字符串中的 tab 符号 **\t** 转为空格，tab 符号 **\t** 默认的空格数是 8，在第 0、8、16...等处给出制表符位置，如果当前位置到开始位置或上一个制表符位置的字符数不足 8 的倍数则以空格代替。
+
+语法：`str.expandtabs(tabsize=8)`
+
+#### str.find() & str.rfind()
+
+find() 方法检测字符串中是否包含子字符串 str ，如果指定 beg（开始） 和 end（结束） 范围，则检查是否包含在指定范围内，如果指定范围内如果包含指定索引值，返回的是索引值在字符串中的起始位置。如果不包含索引值，返回-1。
+
+语法：`str.find(str, beg=0, end=len(string))`
+
+rfind() 返回字符串最后一次出现的位置，如果没有匹配项则返回-1。
+
+语法：`str.rfind(str, beg=0 end=len(string))`
+
+#### str.index()
+
+index() 方法检测字符串中是否包含子字符串 str ，如果指定 beg（开始） 和 end（结束） 范围，则检查是否包含在指定范围内，该方法与 python find()方法一样，只不过如果str不在 string中会报一个异常。
+
+#### str.isalnum()
+
+isalnum() 方法检测字符串是否由字母和数字组成。如果 string 至少有一个字符并且所有字符都是字母或数字则返回 True,否则返回 False.
+
+注意：如果字符串里面有汉字的话，也返回 True:
+
+```python
+a = 'ssdfghjk24汉字'
+b = a.isalnum()
+print(b)	# True
+```
+
+#### str.isalpha()
+
+isalpha() 方法检测字符串是否只由字母或文字组成。如果字符串至少有一个字符并且所有字符都是字母或文字则返回 True，否则返回 False。
+
+#### str.islower()
+
+如果字符串中包含至少一个区分大小写的字符，并且所有这些(区分大小写的)字符都是小写，则返回 True，否则返回 False
+
+注意：这个函数的判断非常迷。。
+
+```python
+'aaab32'.islower()			# True
+'aaab32你好'.islower()		# True
+'aaab32~'.islower()			# True
+'aaab32~+'.islower()		# True
+'aaab32~?'.islower()		# True
+'aaab32...'.islower()		# True
+'a\nb'.islower()			# True
+r'\b'.islower()				# True
+'\b'.islower()				# False		# 就很迷
+```
+
+#### str.isupper()
+
+isupper() 方法检测字符串中所有的字母是否都为大写。
+
+#### str.isdigit()、s.isdecimal()、str.isnumeric()、
+
+**str.isdigit()** 检测字符串是否只包含数字（即不接受其他一切非 **[0-9]** 元素）。
+
+**s.isdigit、isdecimal 和 s.isnumeric 区别**
+
+**isdigit()**
+
+**True**: Unicode数字，byte数字（单字节），全角数字（双字节）
+
+**False**: 汉字数字，罗马数字，小数
+
+**Error**: 无
+
+**isdecimal()**
+
+**True**: Unicode数字，，全角数字（双字节）
+
+**False**: 罗马数字，汉字数字，小数
+
+**Error**: byte数字（单字节）
+
+**isnumeric()**
+
+**True**: Unicode 数字，全角数字（双字节），汉字数字
+
+**False**: 小数，罗马数字
+
+**Error**: byte数字（单字节）
+
+```python
+num = "1"  #unicode
+num.isdigit()   # True
+num.isdecimal() # True
+num.isnumeric() # True
+
+num = "1" # 全角
+num.isdigit()   # True
+num.isdecimal() # True
+num.isnumeric() # True
+
+num = b"1" # byte
+num.isdigit()   # True
+num.isdecimal() # AttributeError 'bytes' object has no attribute 'isdecimal'
+num.isnumeric() # AttributeError 'bytes' object has no attribute 'isnumeric'
+
+num = "IV" # 罗马数字
+num.isdigit()   # False
+num.isdecimal() # False
+num.isnumeric() # False
+
+num = "四" # 汉字
+num.isdigit()   # False
+num.isdecimal() # False
+num.isnumeric() # True
+```
+
+#### str.isspace()
+
+isspace() 方法检测字符串是否只由空白字符组成。
+
+#### str.istitle()
+
+istitle() 方法检测字符串中所有的单词拼写首字母是否为大写，且其他字母为小写。
+
+#### str.join(seq)
+
+join() 方法用于将序列中的元素以指定的字符连接生成一个新的字符串。
+
+语法：`str.join(sequence)`
+
+```python
+s1 = "-"
+s2 = ""
+seq = ("r", "u", "n", "o", "o", "b") # 字符串序列
+print (s1.join( seq ))		# r-u-n-o-o-b
+print (s2.join( seq ))		# runoob
+```
+
+1. str.join(sequence) 函数中的 sequence 中的元素必须的字符串，否则会报错，
+
+2. 字符串也属于序列
+3. 如果链接的序列是字典，会将所有key连接起来
+
+#### str.ljust()
+
+ljust() 方法返回一个原字符串左对齐,并使用空格填充至指定长度的新字符串。如果指定的长度小于原字符串的长度则返回原字符串。
+
+```python
+str = "Runoob example....wow!!!"
+print (str.ljust(50, '*'))
+# Runoob example....wow!!!**************************
+```
+
+#### str.lower() & str.upper()
+
+ lower() 方法转换字符串中所有大写字符为小写；
+
+upper() 方法将字符串中的小写字母转为大写字母。
+
+#### str.lstrip()
+
+lstrip() 方法用于截掉字符串左边的空格或指定字符。
+
+注意：从左到右移除字符串的指定字符，无字符集参数或为 None 时移除空格，str 时移除所有属于字符集子串的字符一旦不属于则停止移除并返回字符串副本。
+
+```python
+'www.example.com'.lstrip('cmowz.')		# 'example.com'
+```
+
+#### str.maketrans()
+
+maketrans() 方法用于创建字符映射的转换表，对于接受两个参数的最简单的调用方式，第一个参数是字符串，表示需要转换的字符，第二个参数也是字符串表示转换的目标。
+
+两个字符串的长度必须相同，为一一对应的关系。
+
+**注：**Python3.4 已经没有 string.maketrans() 了，取而代之的是内建函数: **bytearray.maketrans()、bytes.maketrans()、str.maketrans()** 。
+
+```python
+# 1.一个参数，该参数必须为字典
+d = {'a':'1','b':'2','c':'3','d':'4','e':'5','s':'6'}
+trantab = str.maketrans(d)
+st='just do it'
+print(st.translate(trantab))	# ju6t 4o it
+
+# 2.两个参数 x 和 y，x、y 必须是长度相等的字符串，并且 x 中每个字符映射到 y 中相同位置的字符
+x = 'abcdefs'
+y = '1234567'
+st='just do it'
+trantab = str.maketrans(x,y)
+print(st.translate(trantab))	# ju6t 4o it
+
+# 3.三个参数 x、y、z，第三个参数 z 必须是字符串，其字符将被映射为 None，即删除该字符；如果 z 中字符与 x 中字符重复，该重复的字符在最终结果中还是会被删除。也就是无论是否重复，只要有第三个参数 z，z 中的字符都会被删除。
+x = 'abcdefs'
+y='1234567'
+z='ot'
+st='just do it'
+trantab = str.maketrans(x,y,z)
+print(st.translate(trantab))	# ju7 4 i
+
+x = 'abst'
+y = '1234'
+z = 's'
+st = 'just do it'
+trantab = str.maketrans(x,y,z)
+print(st.translate(trantab))	# ju4 do i4
+```
+
+#### max(str) & min(str)
+
+查看ASCII码：`ord(str)`
+
+大致顺序：`0~9,A~Z,a~z`
+
+```python
+print(ord('0'), ord('1'), ord('9'), ord('A'), ord('Z'), ord('a'), ord('z'))
+
+# 48 49 57 65 90 97 122
+```
+
+#### str.replace()
+
+replace() 方法把字符串中的 old（旧字符串） 替换成 new(新字符串)，如果指定第三个参数max，则替换不超过 max 次。
+
+语法：`str.replace(old, new[, max])`
+
+#### TODO
 
 ### 补充
 
@@ -1286,3 +1621,4 @@ l = ' '.join(l)
 ```
 
 由于列表的 append 操作是 O(1) 复杂度，字符串同理。因此，这个含有 for 循环例子的时 间复杂度为 n*O(1)=O(n)。
+

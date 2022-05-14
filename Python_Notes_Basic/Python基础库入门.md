@@ -1149,6 +1149,17 @@ print(d)
 # {(0,): 'xxx'}
 ```
 
+#### 字典的排序
+
+- **按key排序，取value**
+
+```python
+d = {'2': 'FmThic:@2', '1': 'layer_1_thickness(A)'}
+print(sorted(d.items()))		# [('1', 'layer_1_thickness(A)'), ('2', 'FmThic:@2')]
+# 如果只想取value
+print(list(zip(*sorted(d.items()))))	# [('1', '2'), ('layer_1_thickness(A)', 'FmThic:@2')]
+```
+
 #### 字典和集合的工作原理
 
 不同于其他数据结构，字典和集合的内部结构都是一张哈希表。

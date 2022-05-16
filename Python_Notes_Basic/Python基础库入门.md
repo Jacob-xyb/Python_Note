@@ -1392,9 +1392,11 @@ rfind() 返回字符串最后一次出现的位置，如果没有匹配项则返
 
 语法：`str.rfind(str, beg=0 end=len(string))`
 
-#### str.index()
+#### str.index() & str.rindex()
 
 index() 方法检测字符串中是否包含子字符串 str ，如果指定 beg（开始） 和 end（结束） 范围，则检查是否包含在指定范围内，该方法与 python find()方法一样，只不过如果str不在 string中会报一个异常。
+
+rindex() 方法则是返回最后出现的位置。
 
 #### str.isalnum()
 
@@ -1518,7 +1520,7 @@ print (s2.join( seq ))		# runoob
 2. 字符串也属于序列
 3. 如果链接的序列是字典，会将所有key连接起来
 
-#### str.ljust()
+#### str.ljust() & str.rjust()
 
 ljust() 方法返回一个原字符串左对齐,并使用空格填充至指定长度的新字符串。如果指定的长度小于原字符串的长度则返回原字符串。
 
@@ -1527,6 +1529,8 @@ str = "Runoob example....wow!!!"
 print (str.ljust(50, '*'))
 # Runoob example....wow!!!**************************
 ```
+
+rjust() 方法返回一个原字符串右对齐,并使用空格填充至指定长度的新字符串。如果指定的长度小于原字符串的长度则返回原字符串。
 
 #### str.lower() & str.upper()
 
@@ -1598,7 +1602,9 @@ print(ord('0'), ord('1'), ord('9'), ord('A'), ord('Z'), ord('a'), ord('z'))
 
 replace() 方法把字符串中的 old（旧字符串） 替换成 new(新字符串)，如果指定第三个参数max，则替换不超过 max 次。
 
-语法：`str.replace(old, new[, max])`
+语法：`str.replace(old, new[, max]) -> str`
+
+**Tip：** `replace` 不会改变对象自身，而是返回一个副本，因此可以连续使用。 `str.replace().replace()`
 
 #### TODO
 
@@ -1623,7 +1629,7 @@ replace() 方法把字符串中的 old（旧字符串） 替换成 new(新字符
 ```python
 s = ''
 for n in range(0, 100000):
-s += str(n)
+	s += str(n)
 ```
 
 每次循环，似乎都得创建一个新的字符串；而每次创建一个新的字符串，都需要 O(n) 的时间复杂度。因此，总的时间复杂度就为 O(1) + O(2) + … + O(n) = O(n^2)。这样到底对不对呢？
@@ -1637,9 +1643,26 @@ s += str(n)
 ```python
 l = []
 for n in range(0, 100000):
-l.append(str(n))
+    l.append(str(n))
 l = ' '.join(l)
 ```
 
 由于列表的 append 操作是 O(1) 复杂度，字符串同理。因此，这个含有 for 循环例子的时 间复杂度为 n*O(1)=O(n)。
+
+#### 字符串与 ASCII码
+
+语法：`ord(str)`
+
+```python
+print(ord('0'), ord('1'), ord('9'), ord('A'), ord('Z'), ord('a'), ord('z'))
+# 48 49 57 65 90 97 122
+```
+
+#### 字符串与真值
+
+```python
+print(eval('0'))		# 0
+print(eval('-999'))		# -999
+print(eval("2 * 2"))		# 4
+```
 

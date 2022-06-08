@@ -2048,19 +2048,24 @@ x 的值为： 32.5,  y 的值为：40000...
 
 - **open()的函数原型**
 
-open(file, mode=‘r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True)
+常用形式：`open(file, mode='r')`
+
+完整语法：
+
+```python
+open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None)
+```
 
 从官方文档中我们可以看到open函数有很多的参数，我们常用的是file，mode和encoding，对于其它的几个参数，平时不常用，也简单介绍一下。
 
-buffering的可取值有0，1， >1三个，0代表[buffer](https://so.csdn.net/so/search?q=buffer&spm=1001.2101.3001.7020)关闭（只适用于二进制模式），1代表line buffer（只适用于文本模式），>1表示初始化的buffer大小；
-
-encoding表示的是返回的数据采用何种编码，一般采用 `utf8` 或者 `gbk` ；
-
-errors的取值一般有strict，ignore，当取strict的时候，字符编码出现问题的时候，会报错，当取ignore的时候，编码出现问题，程序会忽略而过，继续执行下面的程序。
-
-newline可以取的值有None, \n, \r, '', ‘\r\n' ，用于区分换行符，但是这个参数只对文本模式有效；
-
-closefd的取值，是与传入的文件参数有关，默认情况下为True，传入的file参数为文件的文件名，取值为False的时候，file只能是文件描述符，什么是文件描述符，就是一个非负整数，在Unix内核的系统中，打开一个文件，便会返回一个文件描述符。
+- file: 必需，文件路径（相对或者绝对路径）。
+- mode: 可选，文件打开模式
+- buffering: 设置缓冲; 可取值有0，1， >1三个，0代表buffer关闭（只适用于二进制模式），1代表line buffer（只适用于文本模式），>1表示初始化的buffer大小；
+- encoding: 表示的是返回的数据采用何种编码，一般采用 `utf8` 或者 `gbk` ；
+- errors: 报错级别，取值一般有 `strict`，`ignore`，当取 `strict` 的时候，字符编码出现问题的时候，会报错，当取 `ignore` 的时候，编码出现问题，程序会忽略而过，继续执行下面的程序。
+- newline: 可以取的值有`None, \n, \r, '', ‘\r\n' `，用于区分换行符，但是这个参数只对文本模式有效；
+- closefd: 传入的file参数类型，取值与传入的文件参数有关，默认情况下为True，传入的file参数为文件的文件名，取值为False的时候，file只能是文件描述符，什么是文件描述符，就是一个非负整数，在Unix内核的系统中，打开一个文件，便会返回一个文件描述符；
+- opener: 设置自定义开启器，开启器的返回值必须是一个打开的文件描述符。
 
 ---
 
@@ -2234,7 +2239,29 @@ Python 是一个非常好的语言。
 
 这个方法很简单, 但是并没有提供一个很好的控制。 因为两者的处理机制不同, 最好不要混用。
 
-### 文件对象所处位置
+### 文件属性
+
+一个文件被打开后，你有一个file对象，你可以得到有关该文件的各种信息。
+
+以下是和file对象相关的所有属性的列表：
+
+| 属性           | 描述                                                         |
+| :------------- | :----------------------------------------------------------- |
+| file.closed    | 返回true如果文件已被关闭，否则返回false。                    |
+| file.mode      | 返回被打开文件的访问模式。                                   |
+| file.name      | 返回文件的名称。                                             |
+| file.softspace | 如果用print输出后，必须跟一个空格符，则返回false。否则返回true。 |
+
+```python
+# 打开一个文件
+fo = open("/tmp/foo.txt", "w")
+print "文件名: ", fo.name
+print "是否已关闭 : ", fo.closed
+print "访问模式 : ", fo.mode
+print "末尾是否强制加空格 : ", fo.softspace
+```
+
+### 文件定位
 
 #### f.tell()
 
@@ -2263,4 +2290,77 @@ b'5'
 >>> f.read(1)
 b'd'
 ```
+
+### 相关函数
+
+#### f.close()
+
+在文本文件中 (那些打开文件的模式下没有 b 的), 只会相对于文件起始位置进行定位。
+
+当你处理完一个文件后, 调用 f.close() 来关闭文件并释放系统的资源，如果尝试再调用该文件，则会抛出异常。
+
+### pickle 模块
+
+python的pickle模块实现了基本的数据序列和反序列化。
+
+通过pickle模块的序列化操作我们能够将程序中运行的对象信息保存到文件中去，永久存储。
+
+通过pickle模块的反序列化操作，我们能够从文件中创建上一次程序保存的对象。
+
+基本接口：
+
+```python
+pickle.dump(obj, file, [,protocol])
+```
+
+有了 pickle 这个对象, 就能对 file 以读取的形式打开:
+
+```python
+x = pickle.load(file)
+```
+
+**注解：**从 file 中读取一个字符串，并将它重构为原来的python对象。
+
+**file:** 类文件对象，有read()和readline()接口。
+
+```python
+import pickle
+
+# 使用pickle模块将数据对象保存到文件
+data1 = {'a': [1, 2.0, 3, 4+6j],
+         'b': ('string', u'Unicode string'),
+         'c': None}
+
+selfref_list = [1, 2, 3]
+selfref_list.append(selfref_list)
+
+output = open('./tmp/data.pkl', 'wb')
+
+# Pickle dictionary using protocol 0.
+pickle.dump(data1, output)
+
+# Pickle the list using the highest protocol available.
+pickle.dump(selfref_list, output, -1)
+
+output.close()
+```
+
+```python
+import pprint, pickle
+
+#使用pickle模块从文件中重构python对象
+pkl_file = open('./tmp/data.pkl', 'rb')
+
+data1 = pickle.load(pkl_file)
+pprint.pprint(data1)
+
+data2 = pickle.load(pkl_file)
+pprint.pprint(data2)
+
+pkl_file.close()
+```
+
+
+
+
 

@@ -434,7 +434,7 @@ l.count(3)		# 3
 
 返回：
 
-该方法返回查找对象的索引位置，如果没有找到对象则抛出异常。
+**该方法返回查找对象的索引位置，如果没有找到对象则抛出异常。**
 
 ```python
 l = [3, 2, 1, 3, 4]
@@ -2360,7 +2360,261 @@ pprint.pprint(data2)
 pkl_file.close()
 ```
 
+## JSON
 
+TODO
+
+# 条件与循环
+
+习惯把“条件与循环”，叫做编程中的基本功。为什么称它为基本功呢？因为它控制着代码的逻辑，可以说是程序的中枢系统。如果把写程序比作盖楼房，那么条件与循环就是楼房的根基，其他所有东西都是在此基础上构建而成。
+
+毫不夸张地说，写一手简洁易读的条件与循环代码，对提高程序整体的质量至关重要。
+
+## 条件语句
+
+首先，我们一起来看一下 Python 的条件语句，用法很简单。比如，我想要表示 y=|x|这个函数，那么相应的代码便是：
+
+```python
+def Jx_abs(x):
+    if x < 0:
+        y = -x
+    else:
+        y = x
+    return y
+
+Jx_abs(-3)
+```
+
+和其他语言不一样，我们不能在条件语句中加括号，但需要注意的是，在条件语句的末尾必须加上冒号`:`，这是 Python 特定的语法规范。 由于 Python 不支持 switch 语句，因此，当存在多个条件判断时，我们需要用 else if 来实 现，这在 Python 中的表达是elif。语法如下：
+
+```python
+if condition_1:
+	statement_1
+elif condition_2:
+	statement_2
+...
+elif condition_i:
+	statement_i
+else:
+	statement_n
+```
+
+整个条件语句是顺序执行的，如果遇到一个条件满足，比如 condition_i 满足时，在执行完statement_i 后，便会退出整个 if、elif、else 条件语句，而不会继续向下执行。
+
+关于省略判断条件的常见用法:
+
+![](https://i.loli.net/2021/10/20/SlPedpLN2hcQiBv.png)
+
+不过，切记，在实际写代码时，我们鼓励，除了 `bool` 类型的数据，条件判断最好是显性的。比如，在判断一个整型数是否为 0 时，我们最好写出判断的条件：
+
+```python
+if i != 0:
+...
+```
+
+## 循环语句
+
+所谓循环，顾名思义，本质上就是遍历集合中的元素。和其他语言一样，Python 中的循环一般通过 for 循环和 while 循环实现。
+
+比如，我们有一个列表，需要遍历列表中的所有元素并打印输出，代码如下：
+
+```python
+l = [1, 2, 3, 4]
+for item in l:
+    print(item)
+```
+
+其实，Python 中的数据结构只要是可迭代的（iterable），比如列表、集合等等，那么都可以通过下面这种方式遍历：
+
+```python
+for item in <iterable>:
+...
+```
+
+这里需要单独强调一下字典。**字典本身只有键是可迭代的**，如果我们要遍历它的值或者是键值对，就需要通过其内置的函数 values() 或者 items() 实现。其中，values() 返回字典的值的集合，items() 返回键值对的集合。
+
+```python
+d = {'name': 'jason', 'dob': '2000-01-01', 'gender': 'male'}
+for k in d: # 遍历字典的键
+	print(k)
+'''
+name
+dob
+gender
+'''
+for v in d.values(): # 遍历字典的值
+	print(v)
+'''
+jason
+2000-01-01
+male
+'''
+for k, v in d.items(): # 遍历字典的键值对
+	print('key: {}, value: {}'.format(k, v))
+'''
+key: name, value: jason
+key: dob, value: 2000-01-01
+key: gender, value: male
+'''
+```
+
+通过索引来遍历：
+
+```python
+l = [1, 2, 3, 4, 5, 6, 7]
+for index in range(0, len(l)):
+    if index < 3:
+        print(l[index])
+```
+
+当我们同时需要索引和元素时，还有一种更简洁的方式，那就是通过 Python 内置的函数`enumerate()`。
+
+用它来遍历集合，不仅返回每个元素，并且还返回其对应的索引，这样一来，上面的例子就可以写成:
+
+```python
+l = [1, 2, 3, 4, 5, 6, 7]
+for index, item in enumerate(l):
+    if index < 3:
+        print(item)
+```
+
+### continue && break
+
+在循环语句中，我们还常常搭配 `continue` 和 `break` 一起使用。
+
+所谓 `continue`，就是让程序跳过当前这层循环，继续执行下面的循环；
+
+而 `break` 则是指完全跳出所在的整个循环体。
+
+在循环中适当加入 `continue` 和 `break`，往往能使程序更加简洁、易读。
+
+## 条件与循环的复用
+
+在阅读代码的时候，你应该常常会发现，有很多将条件与循环并做一行的操作，例如：
+
+```
+expression1 if condition else expression2 for item in iterable
+```
+
+将这个表达式分解开来，其实就等同于下面这样的嵌套结构：
+
+```py
+for item in iterable:
+    if condition:
+        expression1
+    else:
+        expression2
+```
+
+而如果没有 else 语句，则需要写成：
+
+```
+expression for item in iterable if condition
+```
+
+举个例子，比如我们要绘制 y = 2*|x| + 5 的函数图像，给定集合 x 的数据点，需要计算出 y 的数据集合，那么只用一行代码，就可以很轻松地解决问题了：
+
+```python
+y = [value * 2 + 5 if value > 0 else -value * 2 + 5 for value in x]
+```
+
+再比如我们在处理文件中的字符串时，常常遇到的一个场景： 将文件中逐行读取的一个完整语句，按逗号分割单词，去掉首位的空字符，并过滤掉长度小于等于 3 的单词，最后返回由单词组成的列表。这同样可以简洁地表达成一行：
+
+```python
+text = "Today,  is, Sunday"
+text_list = [s.strip() for s in text.split(',') if len(s.strip()) > 3]
+print(text_list)	# ['Today', 'Sunday']
+```
+
+当然，这样的复用并不仅仅局限于一个循环。比如，给定两个列表 x、y，要求返回 x、y 中所有元素对组成的元祖，相等情况除外。那么，你也可以很容易表示出来：
+
+```
+[(xx, yy) for xx in x for yy in y if xx != yy]
+```
+
+熟练之后，你会发现这种写法非常方便。当然，如果遇到逻辑很复杂的复用，你可能会觉得写成一行难以理解、容易出错。那种情况下，用正常的形式表达，也不失为一种好的规范和选择。
+
+## 区别
+
+很多时候，for 循环和 while 循环可以互相转换，比如要遍历一个列表，我们用 while 循环同样可以完成：
+
+```python
+l = [1, 2, 3, 4]
+index = 0
+while index < len(l):
+    print(l[index])
+    index += 1
+```
+
+那么，两者的使用场景又有什么区别呢？
+
+通常来说，如果你只是遍历一个已知的集合，找出满足条件的元素，并进行相应的操作，那么**使用 for 循环更加简洁**。
+
+但如果你需要在满足某个条件前，不停地重复某些操作，并且没有特定的集合需要去遍历，那么一般则会使用 while 循环。
+
+比如，某个交互式问答系统，用户输入文字，系统会根据内容做出相应的回答。
+
+为了实现这个功能，我们一般会使用 while 循环，大致代码如下：
+
+```python
+while True:
+    try:
+        text = input('Please enter your questions, enter "q" to exit')
+        if text == 'q':
+            print('Exit system')
+            break
+        ...
+        ...
+        print(response)
+    except as err:
+        print('Encountered error: {}'.format(err))
+        break
+```
+
+### for 循环和 while 循环的效率问题:
+
+要知道，**range() 函数是直接由 C 语言写的，调用它速度非常快**。
+
+而 while 循环中的“i+= 1”这个操作，得通过 Python 的解释器间接调用底层的 C 语言；
+
+并且这个简单的操作，又涉及到了对象的创建和删除（因为 i 是整型，是 immutable，i += 1 相当于 i = new int(i + 1)）。
+
+所以，显然，for 循环的效率更胜一筹。
+
+## 思考题
+
+给定下面两个列表 attributes 和 values，要求针对 values 中每一组子列表 value，输出其和 attributes 中的键对应后的字典，最后返回字典组成的列表。
+
+你能分别用一行和多行条件循环语句，来实现这个功能吗？
+
+```python
+attributes = ['name', 'dob', 'gender']
+values = [['jason', '2000-01-01', 'male'],
+['mike', '1999-01-01', 'male'],
+['nancy', '2001-02-01', 'female']
+]
+# expected outout:
+# [{'name': 'jason', 'dob': '2000-01-01', 'gender': 'male'},
+# {'name': 'mike', 'dob': '1999-01-01', 'gender': 'male'},
+# {'name': 'nancy', 'dob': '2001-02-01', 'gender': 'female'}]
+```
+
+```python
+# 一行
+list_dict = [dict(zip(attributes, value)) for value in values]
+print(list_dict)
+```
+
+```python
+# 多行
+list_dict = []
+for value in values:
+    temp = {}
+    for index, v in enumerate(value):
+        temp[attributes[index]] = v
+    list_dict.append(temp)
+print(list_dict)
+```
 
 
 

@@ -3096,3 +3096,194 @@ except Exception as e:
 
 - 对于 flow-control（流程控制）的代码逻辑，我们一般不用异常处理。
 
+# 函数
+
+函数是组织好的，可重复使用的，用来实现单一，或相关联功能的代码段。
+
+函数能提高应用的模块性，和代码的重复利用率。你已经知道Python提供了许多内建函数，比如print()。但你也可以自己创建函数，这被叫做用户自定义函数。
+
+一个规范的值得借鉴的 Python 程序，除非代码量很少（比如 10 行、20 行以下），基本都应该由多个函数组成，这样的代码才更加模块化、规范化。
+
+函数是 Python 程序中不可或缺的一部分。
+
+事实上，在前面的学习中，我们已经用到了很多Python 的内置函数，比如 sorted() 表示对一个集合序列排序，len() 表示返回一个集合序 列的长度大小等等。
+
+## 自定义函数
+
+你可以定义一个由自己想要功能的函数，以下是简单的规则：
+
+- 函数代码块以 **def** 关键词开头，后接函数标识符名称和圆括号 **()**。
+- 任何传入参数和自变量必须放在圆括号中间，圆括号之间可以用于定义参数。
+- 函数的第一行语句可以选择性地使用文档字符串—用于存放函数说明。
+- 函数内容以冒号 **:** 起始，并且缩进。
+- **return [表达式]** 结束函数，选择性地返回一个值给调用方，不带表达式的 return 相当于返回 None。
+
+![](https://www.runoob.com/wp-content/uploads/2014/05/py-tup-10-26-1.png)
+
+```python
+def my_func(message):
+    print('Got a message: {}'.format(message))
+# 调用函数 my_func()
+my_func('Hello World')
+# 输出
+# Got a message: Hello World
+```
+
+和其他需要编译的语言（比如 C 语言）不一样的是，def 是可执行语句，这意味着函数直到被调用前，都是不存在的。当程序调用函数时，def 语句才会创建一个新的函数对象，并赋予其名字。
+
+需要注意，主程序调用函数时，必须保证这个函数此前已经定义过，不然就会报错，比如：
+
+```python
+my_func('hello world')
+def my_func(message):
+    print('Got a message: {}'.format(message))
+# 输出
+NameError: name 'my_func' is not defined
+```
+
+另外，Python 函数的参数可以设定默认值，比如下面这样的写法：
+
+```python
+def func(param = 0):
+    ...
+```
+
+这样，在调用函数 func() 时，如果参数 param 没有传入，则参数默认为 0；而如果传入了参数 param，其就会覆盖默认值。
+
+Python 和其他语言相比的一大特点是，Python 是 dynamically typed 的，可以接受任何数据类型（整型，浮点，字符串等等）。
+
+```python
+def my_sum(a, b):
+    return a + b
+
+print(my_sum(3, 5))  # 两数相加
+print(my_sum([1, 2], [3, 4]))  # 列表拼接
+print(my_sum("hello ", "world"))  # 字符串合并
+
+"""
+8
+[1, 2, 3, 4]
+hello world
+"""
+```
+
+当然，两个数据类型不同，是无法相加的，此时就会报错。
+
+Python 不用考虑输入的数据类型，而是将其交给具体的代码去判断执行，同样的一个函数（比如这边的相加函数 my_sum()），可以同时应用在整型、列表、字符串等等的操作中。
+
+在编程语言中，我们把这种行为称为多态。这也是 Python 和其他语言，比如 Java、C 等很大的一个不同点。
+
+当然，Python 这种方便的特性，在实际使用中也会带来诸多问题。因此，必要时请你在开头加上数据的类型检查。
+
+Python 函数的另一大特性，是 Python 支持函数的嵌套。所谓的函数嵌套，就是指函数里面又有函数，比如：
+
+```python
+def f1():
+    print('hello')
+    def f2():
+        print('world')
+    f2()
+f1()
+# 输出
+hello
+world
+```
+
+- 函数嵌套有什么好处呢？
+
+其实，函数的嵌套，主要有下面两个方面的作用。
+
+第一，函数的嵌套能够保证内部函数的隐私。
+
+内部函数只能被外部函数所调用和访问，不会暴露在全局作用域，因此，如果你的函数内部有一些隐私数据（比如数据库的用户、密码等），不想暴露在外，那你就可以使用函数的的嵌套，将其封装在内部函数中，只通过外部函数来访问。
+
+比如：
+
+```python
+def connect_DB():
+    def get_DB_configuration():
+        ...
+        return host, username, password
+    conn = connector.connect(get_DB_configuration())
+    return conn
+```
+
+这里的函数 get_DB_configuration，便是内部函数，它无法在 connect_DB() 函数以外被单独调用。
+
+也就是说，下面这样的外部直接调用是错误的：
+
+```python
+get_DB_configuration()
+# 输出
+NameError: name 'get_DB_configuration' is not defined
+```
+
+第二，合理的使用函数嵌套，能够提高程序的运行效率。我们来看下面这个例子：
+
+```python
+def factorial(input):
+    # validation check
+    if not isinstance(input, int):
+        raise Exception('input must be an integer.')
+    if input < 0:
+        raise Exception('input must be greater or equal to 0' )
+    ...
+
+    def inner_factorial(input):
+        if input <= 1:
+            return 1
+        return input * inner_factorial(input-1)
+    return inner_factorial(input)
+
+print(factorial(5))
+```
+
+这里，使用递归的方式计算一个数的阶乘。因为在计算之前，需要检查输入是否合法，所以我写成了函数嵌套的形式，这样一来，输入是否合法就只用检查一次。
+
+而如果不使用函数嵌套，那么每调用一次递归便会检查一次，这是没有必要的，也会降低程序的运行效率。
+
+## 参数传递
+
+在 python 中，类型属于对象，对象有不同类型的区分，变量是没有类型的：
+
+变量没有类型，它仅仅是一个对象的引用（一个指针），可以是指向 List 类型对象，也可以是指向 String 类型对象。
+
+### 可更改(mutable)与不可更改(immutable)对象
+
+在 python 中，strings, tuples, 和 numbers 是不可更改的对象，而 list,dict 等则是可以修改的对象。
+
+- **不可变类型：**变量赋值 **a=5** 后再赋值 **a=10**，这里实际是新生成一个 int 值对象 10，再让 a 指向它，而 5 被丢弃，不是改变 a 的值，相当于新生成了 a。
+- **可变类型：**变量赋值 **la=[1,2,3,4]** 后再赋值 **la[2]=5** 则是将 list la 的第三个元素值更改，本身la没有动，只是其内部的一部分值被修改了。
+
+python 函数的参数传递：
+
+- **不可变类型：**类似 C++ 的值传递，如整数、字符串、元组。如 fun(a)，传递的只是 a 的值，没有影响 a 对象本身。如果在 fun(a) 内部修改 a 的值，则是新生成一个 a 的对象。
+- **可变类型：**类似 C++ 的引用传递，如 列表，字典。如 fun(la)，则是将 la 真正的传过去，修改后 fun 外部的 la 也会受影响
+
+python 中一切都是对象，严格意义我们不能说值传递还是引用传递，我们应该说传不可变对象和传可变对象。
+
+## 函数变量作用域
+
+Python 函数中变量的作用域和其他语言类似。如果变量是在函数内部定义的，就称为局部变量，只在函数内部有效。
+
+一旦函数执行完毕，局部变量就会被回收，无法访问。
+
+相对应的，全局变量则定义在函数体外部，此时函数内部可以直接调用。
+
+不过，我们不能在函数内部随意改变全局变量的值。
+
+比如，下面的写法就是错误的：
+
+```python
+MIN_VALUE = 1
+def validation_check(value):
+    MIN_VALUE += 1
+validation_check(5)
+
+# 报错
+# UnboundLocalError: local variable 'MIN_VALUE' referenced before assignment
+```
+
+这是因为，Python 的解释器会默认函数内部的变量为局部变量，但是又发现局部变量 MIN_VALUE 并没有声明，因此就无法执行相关操作。
+
+所以，如果我们一定要在函数内部改变全局变量的值，就必须加上 `global` 这个声明：

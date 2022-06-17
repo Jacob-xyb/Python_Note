@@ -2360,6 +2360,38 @@ pprint.pprint(data2)
 pkl_file.close()
 ```
 
+#### pickle 对类的处理 
+
+```python
+import pickle
+class JxTool:
+    def __init__(self):
+        self.name = 'jacob'
+    
+    def test(self):
+        print("hello, world!")
+
+obj_a = JxTool()
+obj_a.test()
+output = open('./tmp/obj.pkl', 'wb')
+pickle.dump(obj_a, output)
+output.close()
+
+# read pkl
+pkl_file = open('./tmp/obj.pkl', 'rb')
+data = pickle.load(pkl_file)
+pkl_file.close()
+
+print(data.name)
+print(type(data))
+
+'''
+hello, world!
+jacob
+<class '__main__.JxTool'>
+'''
+```
+
 ## JSON
 
 TODO
@@ -3242,13 +3274,15 @@ print(factorial(5))
 
 而如果不使用函数嵌套，那么每调用一次递归便会检查一次，这是没有必要的，也会降低程序的运行效率。
 
-## 参数传递
+## 参数
 
 在 python 中，类型属于对象，对象有不同类型的区分，变量是没有类型的：
 
 变量没有类型，它仅仅是一个对象的引用（一个指针），可以是指向 List 类型对象，也可以是指向 String 类型对象。
 
-### 可更改(mutable)与不可更改(immutable)对象
+### 参数传递
+
+#### 可更改(mutable)与不可更改(immutable)对象
 
 在 python 中，strings, tuples, 和 numbers 是不可更改的对象，而 list,dict 等则是可以修改的对象。
 
@@ -3260,7 +3294,154 @@ python 函数的参数传递：
 - **不可变类型：**类似 C++ 的值传递，如整数、字符串、元组。如 fun(a)，传递的只是 a 的值，没有影响 a 对象本身。如果在 fun(a) 内部修改 a 的值，则是新生成一个 a 的对象。
 - **可变类型：**类似 C++ 的引用传递，如 列表，字典。如 fun(la)，则是将 la 真正的传过去，修改后 fun 外部的 la 也会受影响
 
-python 中一切都是对象，严格意义我们不能说值传递还是引用传递，我们应该说传不可变对象和传可变对象。
+python 中一切都是对象，严格意义我们不能说值传递还是引用传递，我们应该说 `传不可变对象` 和 `传可变对象` 。
+
+### 参数类型
+
+以下是调用函数时可使用的正式参数类型：
+
+- 必需参数
+- 关键字参数
+- 默认参数
+- 不定长参数
+
+#### 必需参数
+
+**必需参数须以正确的顺序传入函数。调用时的数量必须和声明时的一样。**
+
+#### 关键字参数
+
+关键字参数和函数调用关系紧密，函数调用使用关键字参数来确定传入的参数值。
+
+使用**关键字参数允许函数调用时参数的顺序与声明时不一致**，因为 Python 解释器能够用参数名匹配参数值。
+
+```python
+# 形如：
+def func(name, age):
+    ···
+
+func(age=18, name='jacob')
+```
+
+#### 默认参数
+
+调用函数时，如果没有传递参数，则会使用默认参数。
+
+```python
+def func(name, age=35):
+    ···
+
+func(name='jacob')
+```
+
+#### 不定长参数
+
+你可能需要一个函数能处理比当初声明时更多的参数。这些参数叫做不定长参数，和上述 2 种参数不同，声明时不会命名。基本语法如下：
+
+```python
+def functionname([formal_args,] *var_args_tuple ):
+   "函数_文档字符串"
+   function_suite
+   return [expression]
+```
+
+- 单星号参数
+
+**加了星号 * 的参数会以元组(tuple)的形式导入，存放所有未命名的变量参数。**
+
+```python
+# 可写函数说明
+def printinfo( arg1, *vartuple ):
+   "打印任何传入的参数"
+   print ("输出: ")
+   print (arg1)
+   print (vartuple)
+ 
+# 调用printinfo 函数
+printinfo( 70, 60, 50 )
+
+'''
+输出: 
+70
+(60, 50)
+'''
+```
+
+如果在函数调用时没有指定参数，它就是一个空元组。我们也可以不向函数传递未命名的变量。如下实例：
+
+```python
+# 可写函数说明
+def printinfo( arg1, *vartuple ):
+   "打印任何传入的参数"
+   print ("输出: ")
+   print (arg1)
+   for var in vartuple:
+      print (var)
+   return
+ 
+# 调用printinfo 函数
+printinfo( 10 )
+printinfo( 70, 60, 50 )
+
+'''
+输出:
+10
+输出:
+70
+60
+50
+'''
+```
+
+- 双星号参数
+
+```python
+# 可写函数说明
+def printinfo( arg1, **vardict ):
+   "打印任何传入的参数"
+   print ("输出: ")
+   print (arg1)
+   print (vardict)
+ 
+# 调用printinfo 函数
+printinfo(1, a=2,b=3)
+
+'''
+输出: 
+1
+{'a': 2, 'b': 3}
+'''
+```
+
+#### 强制关键字传入
+
+声明函数时，参数中星号 ***** 可以单独出现，例如:
+
+```python
+def f(a,b,*,c):
+    return a+b+c
+```
+
+如果单独出现星号 *****，则星号 ***** 后的参数必须用关键字传入：
+
+```python
+# *号参数后必须使用关键字传入
+
+def func(a, b, *, c):
+    return a+b+c
+
+def func2(*, a, b, c):
+    return a+b+c
+
+print(func(1, 2, c=3))		# 6
+
+# print(func2(1, 2, c=3))
+# TypeError: func2() takes 0 positional arguments but 2 positional arguments (and 1 keyword-only argument) were given
+
+print(func2(a=1, b=2, c=3))	# 6
+```
+
+
 
 ## 函数变量作用域
 
@@ -3287,3 +3468,147 @@ validation_check(5)
 这是因为，Python 的解释器会默认函数内部的变量为局部变量，但是又发现局部变量 MIN_VALUE 并没有声明，因此就无法执行相关操作。
 
 所以，如果我们一定要在函数内部改变全局变量的值，就必须加上 `global` 这个声明：
+
+```python
+MIN_VALUE = 1
+def validation_check(value):
+    global MIN_VALUE
+    MIN_VALUE += 1
+validation_check(5)
+```
+
+这里的 `global` 关键字，并不表示重新创建了一个全局变量 MIN_VALUE，而是告诉 Python 解释器，函数内部的变量 MIN_VALUE，就是之前定义的全局变量，并不是新的全局变量，也不是局部变量。
+
+这样，程序就可以在函数内部访问全局变量，并修改它的值了。
+
+另外，如果遇到函数内部局部变量和全局变量同名的情况，那么在函数内部，局部变量会覆盖全局变量，比如下面这种：
+
+```python
+MIN_VALUE = 1
+def validation_check(value):
+    MIN_VALUE = 3
+    print(MIN_VALUE)
+validation_check(5)		# 3
+```
+
+类似的，对于嵌套函数来说，内部函数可以访问外部函数定义的变量，但是无法修改，若要修改，必须加上 `nonlocal` 这个关键字：
+
+```python
+def outer():
+    x = "local"
+    def inner():
+        nonlocal x # nonlocal 关键字表示这里的 x 就是外部函数 outer 定义的变量 x
+        x = 'nonlocal'
+        print("inner:", x)
+    inner()
+    print("outer:", x)
+    
+outer()
+'''
+inner: nonlocal
+outer: nonlocal
+'''
+
+# 如果不加上 nonlocal 这个关键字，而内部函数的变量又和外部函数变量同名，那么同样的，内部函数变量会覆盖外部函数的变量。
+'''
+inner: nonlocal
+outer: local
+'''
+```
+
+## 闭包
+
+闭包（closure）其实和刚刚讲的嵌套函数类似，不同的是，这里外部函数返回的是一个函数，而不是一个具体的值。
+
+返回的函数通常赋于一个变量，这个变量可以在后面被继续执行调用。
+
+比如，我们想计算一个数的 n 次幂，用闭包可以写成下面的代码：
+
+```python
+def nth_power(exponent):
+    def exponent_of(base):
+        return base ** exponent
+    return exponent_of # 返回值是 exponent_of 函数
+
+square = nth_power(2) # 计算一个数的平方
+cube = nth_power(3) # 计算一个数的立方
+
+print(square)
+print(cube)
+
+print(square(2))  # 计算2的平方
+print(cube(2))  # 计算2的立方
+
+'''
+<function nth_power.<locals>.exponent_of at 0x000001DC2FD330D0>
+<function nth_power.<locals>.exponent_of at 0x000001DC2FD33280>
+4
+8
+'''
+```
+
+这里外部函数 nth_power() 返回值，是函数 exponent_of()，而不是一个具体的数值。
+
+需要注意的是，在执行完square = nth_power(2)和cube = nth_power(3)后，外部函数 nth_power() 的参数 exponent，仍然会被内部函数 exponent_of() 记住。
+
+这样，之后我们调用 square(2) 或者 cube(2) 时，程序就能顺利地输出结果，而不会报错说参数 exponent 没有定义了。
+
+看到这里，你也许会思考，为什么要闭包呢？上面的程序，我也可以写成下面的形式啊！
+
+```python
+def nth_power_rewrite(base, exponent):
+    return base ** exponent
+```
+
+确实可以，不过，要知道，**使用闭包的一个原因，是让程序变得更简洁易读。**
+
+设想一下，比如你需要计算很多个数的平方，那么你觉得写成下面哪一种形式更好呢？
+
+```python
+# 不适用闭包
+res1 = nth_power_rewrite(base1, 2)
+res2 = nth_power_rewrite(base2, 2)
+res3 = nth_power_rewrite(base3, 2)
+...
+# 使用闭包
+square = nth_power(2)
+res1 = square(base1)
+res2 = square(base2)
+res3 = square(base3)
+...
+```
+
+显然是第二种，是不是？首先直观来看，第二种形式，让你每次调用函数都可以少输入一个参数，表达更为简洁。
+
+其次，和上面讲到的嵌套函数优点类似，函数开头需要做一些额外工作，而你又需要多次调用这个函数时，将那些额外工作的代码放在外部函数，就可以减少多次调用导致的不必要的开销，提高程序的运行效率。
+
+另外还有一点，后面再讲，闭包常常和装饰器（decorator）一起使用。
+
+## 总结
+
+1. Python 中函数的参数可以接受任意的数据类型，使用起来需要注意，必要时请在函数开头加入数据类型的检查；
+2. 和其他语言不同，Python 中函数的参数可以设定默认值；
+3. 嵌套函数的使用，能保证数据的隐私性，提高程序运行效率；
+4. 合理地使用闭包，则可以简化程序的复杂度，提高可读性。
+
+# 匿名函数
+
+不过，除了常规函数，你应该也会在代码中见到一些“非常规”函数，它们往往很简短，就一行，并且有个很酷炫的名字——`lambda`，没错，这就是匿名函数。
+
+匿名函数在实际工作中同样举足轻重，正确地运用匿名函数，能让我们的代码更简洁、易读。
+
+## 匿名函数基础
+
+```
+lambda argument1, argument2,... argumentN : expression
+```
+
+我们可以看到，匿名函数的关键字是 `lambda`，之后是一系列的参数，然后用冒号隔开，最后则是由这些参数组成的表达式。我们通过几个例子看一下它的用法：
+
+```python
+square = lambda x: x**2
+square(3)		# 9
+```
+
+TODO: https://www.runoob.com/python3/python3-function.html
+

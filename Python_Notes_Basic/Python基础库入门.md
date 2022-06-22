@@ -3889,11 +3889,45 @@ print(harry_potter_book.get_context_length())	# 10
 
 ## 对象的进阶应用
 
-1. 如何在一个类中定义一些常量，每个对象都可以方便访问这些常量而不用重新构造？
-2. 如果一个函数不涉及到访问修改这个类的属性，而放到类外面有点不恰当，怎么做才能更优雅呢？
-3. 既然类是一群相似的对象的集合，那么可不可以是一群相似的类的集合呢？
+### 类常量 和 静态函数
 
-前两个问题很好解决，不过，它们涉及到一些常用的代码规范。
+- **如何在一个类中定义一些常量，每个对象都可以方便访问这些常量而不用重新构造？**
+
+一种很常规的做法，是用全大写来表示常量，因此我们可以在类中使用 `self.WELCOME_STR` ，或者在类外使用 `Entity.WELCOME_STR` ，来表达这个字符串。
+
+- **如果一个函数不涉及到访问修改这个类的属性，而放到类外面有点不恰当，怎么做才能更优雅呢？**
+
+而静态函数则与类没有什么关联，最明显的特征便是，静态函数的第一个参数没有任何特殊性。
+
+一般而言，静态函数可以用来做一些简单独立的任务，既方便测试，也能优化代码结构。静态函数还可以通过在函数前一行加上 `@staticmethod` 来表示，代码中也有相应的示例。这其实使用了装饰器的概念，我们会在后面的章节中详细讲解。
+
+```python
+class ObjectTest():
+    CONST_STR = "这是一个类的常量"
+    
+    @staticmethod
+    def print_text():
+        print("hello world")
+    
+    # 成员函数可以正常用 self.function() 调用 静态函数 和 常量
+    def test1(self):
+        self.print_text()
+        print(self.CONST_STR)
+    
+    # 静态函数没有 self 函数，只能靠 类对象 来调用 类的 静态函数 和 常量
+    @staticmethod
+    def test2():
+        ObjectTest.print_text()
+        print(ObjectTest.CONST_STR)
+```
+
+### 成员函数 和 类函数
+
+类函数的第一个参数一般为 cls，表示必须传一个类进来。
+
+类函数最常用的功能是实现不同的 `init` 构造函数，比如下文代码中，我们使用 create_empty_book 类函数，来创造新的书籍对象，其 context 一定为 'nothing'。这样的代码，就比你直接构造要清晰一些。类似的，类函数需要装饰器 `@classmethod` 来声明。
+
+成员函数则是我们最正常的类的函数，它不需要任何装饰器声明，第一个参数 `self` 代表当前对象的引用，可以通过此函数，来实现想要的查询 / 修改类的属性等功能。
 
 ```python
 class Document():
@@ -3924,25 +3958,11 @@ print(empty_book.get_welcome('indeed nothing'))
 # Welcome! The context for this book is indeed nothing.
 ```
 
-第一个问题，在 Python 的类里，你只需要和函数并列地声明并赋值，就可以实现这一点，例如这段代码中的 `WELCOME_STR`。
 
-一种很常规的做法，是用全大写来表示常量，因此我们可以在类中使用 `self.WELCOME_STR` ，或者在类外使用 `Entity.WELCOME_STR` ，来表达这个字符串。
 
-而针对第二个问题，我们提出了类函数、成员函数和静态函数三个概念。
+### 类的继承
 
-它们其实很好理解，前两者产生的影响是动态的，能够访问或者修改对象的属性；
-
-而静态函数则与类没有什么关联，最明显的特征便是，静态函数的第一个参数没有任何特殊性。
-
-一般而言，静态函数可以用来做一些简单独立的任务，既方便测试，也能优化代码结构。静态函数还可以通过在函数前一行加上 `@staticmethod` 来表示，代码中也有相应的示例。这其实使用了装饰器的概念，我们会在后面的章节中详细讲解。
-
-而类函数的第一个参数一般为 cls，表示必须传一个类进来。
-
-类函数最常用的功能是实现不同的 `init` 构造函数，比如上文代码中，我们使用 create_empty_book 类函数，来创造新的书籍对象，其 context 一定为 'nothing'。这样的代码，就比你直接构造要清晰一些。类似的，类函数需要装饰器 `@classmethod` 来声明。
-
-成员函数则是我们最正常的类的函数，它不需要任何装饰器声明，第一个参数 `self` 代表当前对象的引用，可以通过此函数，来实现想要的查询 / 修改类的属性等功能。
-
-我们来看第三个问题，既然类是一群相似的对象的集合，那么可不可以是一群相似的类的集合呢？
+- **既然类是一群相似的对象的集合，那么可不可以是一群相似的类的集合呢？**
 
 类的继承，顾名思义，指的是一个类既拥有另一个类的特征，也拥有不同于另一个类的独特特征。在这里的第一个类叫做子类，另一个叫做父类，特征其实就是类的属性和函数。
 
@@ -4018,6 +4038,8 @@ Jx's father
 Jx
 '''
 ```
+
+### 抽象类
 
 抽象类生来就是父类，创建对象就会报错，抽象函数必须重写
 
@@ -4103,7 +4125,196 @@ txt4 = This is our hope ... with this faith we will be able to hew out of mounta
 txt5 = And when this happens, and when we allow freedom ring, when we let it ring from ...
 ```
 
+#### 先定义一个基类
+
 首先先定义 `SearchEngineBase` 基类，这里先给出具体代码：
+
+```python
+class SearchEngineBase(object):
+    def __init__(self):
+        pass
+    
+    def add_corpus(self, file_path):
+        with open(file_path, 'r') as fin:
+            text = fin.read()
+        self.process_corpus(file_path, text)
+    
+    def process_corpus(self, id, text):
+        raise Exception('process_corpus not implement.')
+        
+    def search(self, query):
+        raise Exception('search not implemented.')
+    
+def main(search_engine):
+    for file_path in ['1.txt', '2.txt', '3.txt', '4.txt', '5.txt']:
+        search_engine.add_corpus("tmp\\search_txt\\" + file_path)
+    while True:
+        query = input()
+        results = search_engine.search(query)
+        print('found {} result(s):'.format(len(results)))
+        for result in results:
+            print(result)
+```
+
+SearchEngineBase 可以被继承，继承的类分别代表不同的算法引擎。每一个引擎都应该实现 `process_corpus()` 和 `search()` 两个函数，对应我们刚刚提到的索引器和检索器。main()函数提供搜索器和用户接口，于是一个简单的包装界面就有了。
+
+`add_corpus()` 函数负责读取文件内容，将文件路径作为 ID，连同内容一起送到`process_corpus` 中。
+
+`process_corpus` 需要对内容进行处理，然后文件路径为 ID ，将处理后的内容存下来。处理后的内容，就叫做索引（index）。
+
+`search` 则给定一个询问，处理询问，再通过索引检索，然后返回。
+
+#### 最基本的搜索引擎
+
+```python
+class SimpleEngine(SearchEngineBase):
+    def __init__(self):
+        super(SimpleEngine, self).__init__()
+        self.__id_to_texts = {}
+    
+    def process_corpus(self, id, text):
+        self.__id_to_texts[id] = text
+    
+    def search(self, query):
+        results = []
+        for id, text in self.__id_to_texts.items():
+            if query in text:
+                results.append(id)
+        return results
+
+search_engine = SimpleEngine()
+main(search_engine)
+
+"""
+simple
+found 0 result(s):
+dream
+found 3 result(s):
+tmp\search_txt\1.txt
+tmp\search_txt\2.txt
+tmp\search_txt\3.txt
+"""
+```
+
+SimpleEngine 实现了一个继承 SearchEngineBase 的子类，继承并实现了process_corpus 和 search 接口，同时，也顺手继承了 add_corpus 函数（当然你想重写也是可行的），因此我们可以在 main() 函数中直接调取。
+
+在我们新的构造函数中，self.__id_to_texts = {} 初始化了自己的私有变量，也就是这个用来存储文件名到文件内容的字典。
+
+process_corpus() 函数则非常直白地将文件内容插入到字典中。这里注意，ID 需要是唯一的，不然相同 ID 的新内容会覆盖掉旧的内容。
+
+search 直接枚举字典，从中找到要搜索的字符串。如果能够找到，则将 ID 放到结果列表中，最后返回。
+
+这种实现方式简单，但显然是一种很低效的方式：每次索引后需要占用大量空间，因为索引函数并没有做任何事情；每次检索需要占用大量时间，因为所有索引库的文件都要被重新搜索一遍。如果把语料的信息量视为 n，那么这里的时间复杂度和空间复杂度都应该是 O(n) 级别的。
+
+而且，还有一个问题：这里的 query 只能是一个词，或者是连起来的几个词。如果你想要搜索多个词，它们又分散在文章的不同位置，我们的简单引擎就无能为力了。
+
+#### Bag of Words 和 Inverted Index
+
+- **Bag of Words**
+
+优化最基本的搜索引擎。
+
+最直接的一个想法，就是把语料分词，看成一个个的词汇，这样就只需要对每篇文章存储它所有词汇的 set 即可。根据齐夫定律（Zipf’s law，https://en.wikipedia.org/wiki/Zipf%27s_law），在自然语言的语料库里，一个单词出现的频率与它在频率表里的排名成反比，呈现幂律分布。因此，语料分词的做法可以大大提升我们的存储和搜索效率。
+
+```python
+import re
+
+class SearchEngineBase(object):
+    def __init__(self):
+        pass
+    
+    def add_corpus(self, file_path):
+        with open(file_path, 'r') as fin:
+            text = fin.read()
+        self.process_corpus(file_path, text)
+    
+    def process_corpus(self, id, text):
+        raise Exception('process_corpus not implement.')
+        
+    def search(self, query):
+        raise Exception('search not implemented.')
+    
+    
+def main(search_engine):
+    for file_path in ['1.txt', '2.txt', '3.txt', '4.txt', '5.txt']:
+        search_engine.add_corpus("tmp\\search_txt\\" + file_path)
+    while True:
+        query = input()
+        results = search_engine.search(query)
+        print('found {} result(s):'.format(len(results)))
+        for result in results:
+            print(result)
+
+
+class BOWEngine(SearchEngineBase):
+    def __init__(self):
+        super(BOWEngine, self).__init__()
+        self.__id_to_word = {}
+        
+    def process_corpus(self, id, text):
+        self.__id_to_word[id] = self.parse_text_to_words(text)
+    
+    def search(self, query):
+        query_words = self.parse_text_to_words(query)
+        results = []
+        for id, words in self.__id_to_word.items():
+            if self.query_match(query_words, words):
+                results.append(id)
+        return results
+    
+    @staticmethod
+    def query_match(query_words, words):
+        for query_word in query_words:
+            if query_word not in words:
+                return False
+        return True
+    
+    @staticmethod
+    def parse_text_to_words(text):
+        # 使用正则表达式去除标点符号和换行符
+        text = re.sub(r'[^\w]', ' ', text)
+        # 转为小写
+        text = text.lower()
+        # 生成所有单词的列表
+        word_list = text.split(' ')
+        # 去除空白单词
+        word_list = filter(None, word_list)
+        # 返回单词的 set
+        return set(word_list)
+
+    
+search_engine = BOWEngine()
+main(search_engine)
+
+"""
+simple
+found 0 result(s):
+dream
+found 3 result(s):
+tmp\search_txt\1.txt
+tmp\search_txt\2.txt
+tmp\search_txt\3.txt
+"""
+```
+
+这里我们先来理解一个概念，**BOW Model**，即 `Bag of Words Model`，中文叫做词袋模
+型。这是 NLP 领域最常见最简单的模型之一。
+
+假设一个文本，不考虑语法、句法、段落，也不考虑词汇出现的顺序，只将这个文本看成这些词汇的集合。于是相应的，我们把 id_to_texts 替换成 id_to_words，这样就只需要存这些单词，而不是全部文章，也不需要考虑顺序。
+
+其中，process_corpus() 函数调用类静态函数 parse_text_to_words，将文章打碎形成词袋，放入 set 之后再放到字典中。
+
+search() 函数则稍微复杂一些。这里我们假设，想得到的结果，是所有的搜索关键词都要出现在同一篇文章中。那么，我们需要同样打碎 query 得到一个 set，然后把 set 中的每一个词，和我们的索引中每一篇文章进行核对，看一下要找的词是否在其中。而这个过程由静态函数  query_match 负责。
+
+- **Inverted Index**
+
+可是，即使这样做，每次查询时依然需要遍历所有 ID，虽然比起 Simple 模型已经节约了大量时间，但是互联网上有上亿个页面，每次都全部遍历的代价还是太大了。到这时，又该如何优化呢？
+
+我们每次查询的 query 的单词量不会很多，一般也就几个、最多十几个的样子。那可不可以从这里下手呢？
+
+再有，词袋模型并不考虑单词间的顺序，但有些人希望单词按顺序出现，或者希望搜索的单词在文中离得近一些，这种情况下词袋模型现任就无能为力了。
+
+针对这两点，其实可以继续优化：
 
 TODO
 

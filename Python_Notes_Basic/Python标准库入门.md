@@ -60,3 +60,61 @@ shutil.rmtree([dir])
 ## os.path.
 
 ![](https://img-blog.csdnimg.cn/20210406141640898.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1ODAyMDgx,size_16,color_FFFFFF,t_70)
+
+# sys
+
+# time
+
+## 获取时间
+
+### 计算机内部时间
+
+`time.time() -> float`
+
+获取当前时间戳，即计算机内部时间值，浮点数, 单位 s
+
+```python
+import time
+time.time()		# 1655863478.715323
+```
+
+### 易读方式获取时间
+
+`time.ctime() -> str`
+
+```python
+import time
+time.ctime()	# 'Wed Jun 22 10:07:55 2022'
+```
+
+### 计算机可处理格式
+
+`time.gmtime() -> object`
+
+```python
+import time
+print(time.gmtime())	
+# time.struct_time(tm_year=2022, tm_mon=6, tm_mday=22, tm_hour=2, tm_min=9, tm_sec=30, tm_wday=2, tm_yday=173, tm_isdst=0)
+
+# 获取相应属性
+print(time.gmtime().tm_year)	# 2022
+```
+
+## 格式化时间
+
+### time.strftime(tpl,ts)
+
+`time.strftime(tpl,ts) -> str`
+
+tpl是格式化模板字符串，用来定义输出效果；ts是计算机内部时间类型变量
+
+```python
+import time
+
+t = time.gmtime()
+print(time.strftime("%Y-%m-%d  %H:%M:%S", t))
+# 2022-06-22  02:17:38
+```
+
+
+

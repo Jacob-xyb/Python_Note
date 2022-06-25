@@ -17,6 +17,20 @@ print(os.name)  # nt
 - 获取当前文件所在路径
 
   `os.getcwd()`
+  
+
+-  获取指定路径文件列表
+
+  `os.listdir(path)`
+
+  - path = os.getcwd()；默认为当前文件所在路径
+
+```python
+import os
+p = os.getcwd()
+print(os.listdir(p))
+# ['.ipynb_checkpoints', '1.os.ipynb', '2.sys.ipynb', '3.time.ipynb']
+```
 
 ### 系统文件操作
 
@@ -60,6 +74,36 @@ shutil.rmtree([dir])
 ## os.path.
 
 ![](https://img-blog.csdnimg.cn/20210406141640898.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1ODAyMDgx,size_16,color_FFFFFF,t_70)
+
+### 查看当前路径所在目录
+
+`os.dirname(path)`
+
+```python
+import os
+p = os.getcwd()
+print(p)					# ..\Python_Note\Python_Notes_Basic\Python标准库入门
+print(os.path.dirname(p))	# ..\Python_Note\Python_Notes_Basic
+```
+
+### 路径判断函数
+
+- `os.path.isdir(path)`
+
+  ```python
+  import os
+  p = os.getcwd()
+  l = os.listdir(p)
+  print(l)
+  for i in l:
+      if os.path.isdir(i):
+          print(i)
+  
+  # ['.ipynb_checkpoints', '1.os.ipynb', '2.sys.ipynb', '3.time.ipynb']
+  # .ipynb_checkpoints
+  ```
+
+  
 
 # sys
 

@@ -4433,3 +4433,202 @@ process_corpus 建立倒序索引。注意，这里的代码都是非常精简�
 
 #### LRU 和 多重继承
 
+大量重复性搜索占据了 90% 以上的流量，于是，需要给搜索引擎加一个缓存。
+
+```python
+import pylru
+import re
+
+class SearchEngineBase(object):
+    def __init__(self):
+        pass
+    
+    def add_corpus(self, file_path):
+        with open(file_path, 'r') as fin:
+            text = fin.read()
+        self.process_corpus(file_path, text)
+    
+    def process_corpus(self, id, text):
+        raise Exception('process_corpus not implement.')
+        
+    def search(self, query):
+        raise Exception('search not implemented.')
+    
+def main(search_engine):
+    for file_path in ['1.txt', '2.txt', '3.txt', '4.txt', '5.txt']:
+        search_engine.add_corpus("tmp\\search_txt\\" + file_path)
+    while True:
+        query = input()
+        results = search_engine.search(query)
+        print('found {} result(s):'.format(len(results)))
+        for result in results:
+            print(result)
+
+class BOWInvertedIndexEngine(SearchEngineBase):
+    def __init__(self):
+        super(BOWInvertedIndexEngine, self).__init__()
+        self.inverted_index = {}
+        
+    def process_corpus(self, id, text):
+        words = self.parse_text_to_words(text)  # word 集合
+        for word in words:
+            if word not in self.inverted_index:
+                self.inverted_index[word] = []
+            else:
+                self.inverted_index[word].append(id)
+    
+    @staticmethod
+    def parse_text_to_words(text):
+        # 使用正则表达式去除标点符号和换行符
+        text = re.sub(r'[^\w]', ' ', text)
+        # 转为小写
+        text = text.lower()
+        # 生成所有单词的列表
+        word_list = text.split(' ')
+        # 去除空白单词
+        word_list = filter(None, word_list)
+        # 返回单词的 set
+        return set(word_list)
+        
+    def search(self, query):
+        query_words = list(self.parse_text_to_words(query))
+        # query_words_index = []
+        # for query_word in query_words:
+        # query_words_index.append(0)
+        query_words_index = [0] * len(query_words)
+        
+        # 如果某一个查询单词的倒序索引为空，我们就立刻返回
+        for query_word in query_words:
+            if query_word not in self.inverted_index:
+                return []
+        
+        result = []
+        while True:
+            # 首先，获得当前状态下所有倒序索引的 index
+            current_ids = []
+            
+            for idx, query_word in enumerate(query_words):
+                current_index = query_words_index[idx]
+                current_inverted_list = self.inverted_index[query_word]
+                
+                # 已经遍历到了某一个倒序索引的末尾，结束 search
+                if current_index >= len(current_inverted_list):
+                    return result
+                
+                current_ids.append(current_inverted_list[current_index])
+            
+            # 然后，如果 current_ids 的所有元素都一样，那么表明这个单词在这个元素对应的文档中
+            if all(x == current_ids[0] for x in current_ids):
+                result.append(current_ids[0])
+                query_words_index = [x+1 for x in query_words_index]
+                continue
+            
+            # 如果不是，我们就把最小的元素加一
+            min_val = min(current_ids)
+            min_val_pos = current_ids.index(min_val)
+            query_words_index[min_val_indx] += 1
+
+class LRUCache(object):
+    def __init__(self, size=32):
+        self.cache = pylru.lrucache(size)
+    
+    def has(self, key):
+        return key in self.cache
+    
+    def get(self, key):
+        return self.cache[key]
+    
+    def set(self, key, value):
+        self.cache[key] = value
+    
+class BOWInvertedIndexEngineWithCache(BOWInvertedIndexEngine, LRUCache):
+    def __init__(self):
+        super(BOWInvertedIndexEngineWithCache, self).__init__()
+        LRUCache.__init__(self)
+    
+    def search(self, query):
+        if self.has(query):
+            print('cache hit!')
+            return self.get(query)
+        result = super(BOWInvertedIndexEngineWithCache, self).search(query)
+        self.set(query, result)
+        return result
+
+search_engine = BOWInvertedIndexEngineWithCache()
+main(search_engine)
+
+"""
+simple
+found 0 result(s):
+random
+found 0 result(s):
+dream
+found 2 result(s):
+tmp\search_txt\2.txt
+tmp\search_txt\3.txt
+dream
+cache hit!
+found 2 result(s):
+tmp\search_txt\2.txt
+tmp\search_txt\3.txt
+"""
+```
+
+LRUCache 定义了一个缓存类，你可以通过继承这个类来调用其方法。LRU 缓存是一种很经典的缓存（同时，LRU 的实现也是硅谷大厂常考的算法面试题，这里为了简单，我直接使用 pylru 这个包），它符合自然界的局部性原理，可以保留最近使用过的对象，而逐渐淘汰掉很久没有被用过的对象。
+
+因此，这里的缓存使用起来也很简单，调用 has() 函数判断是否在缓存中，如果在，调用
+get 函数直接返回结果；如果不在，送入后台计算结果，然后再塞入缓存。
+
+我们可以看到，BOWInvertedIndexEngineWithCache 类，多重继承了两个类。首先需要
+注意的是构造函数。多重继承有两种初始化方法：
+
+- 第一种，`super(BOWInvertedIndexEngineWithCache, self).__init__()`直接初始化该类的第一个父类，不过使用这种方法时，要求继承链的最顶层父类必须要继承object；
+- 第二种，对于多重继承，如果有多个构造函数需要调用， 我们就必须用传统的方法`LRUCache.__init__(self) `。
+
+# Python 模块化
+
+## 简单模块化
+
+可以把函数、类、常量拆分到不同的文件，把它们放在同一个文件夹，然后使用 from  our_file import function_name, class_name 的方式调用。之后，这些函数和类就可以在文件内直接使用了。
+
+```python
+# utils.py
+
+def get_sum(a, b):
+    return a + b
+
+# class_utils.py
+
+class Encoder(object):
+    def encode(self, s):
+        return s[::-1]
+
+class Decoder(object):
+    def decode(self, s):
+        return ''.join(reversed(list(s)))
+    
+# main.py
+
+from utils import get_sum
+from class_utils import *
+
+print(get_sum(1, 2))	# 3
+encoder = Encoder()
+decoder = Decoder()
+print(encoder.encode('abcde'))	# edcba
+print(encoder.encode('edcba'))	# abcde
+```
+
+如果我们想调用上层目录呢？注意，`sys.path.append("..") `表示将当前程序所在位
+置向上提了一级。
+
+import 同一个模块只会被执行一次，这样就可以防止重复导入模块出现问题。当然，良好的编程习惯应该杜绝代码多次导入的情况。在 Facebook 的编程规范中，除了一些极其特殊的情况，import 必须位于程序的最前端。
+
+在许多教程中看到过这样的要求：我们还需要在模块所在的文件夹新建一个 `__init__.py`，内容可以为空，也可以用来表述包对外暴露的模块接口。不过，事实上，这是 Python 2 的规范。在 Python 3 规范中，`__init__.py`并不是必须的，很多教程里没提过这一点，或者没讲明白，我希望你还是能注意到这个地方。
+
+整体而言，这就是最简单的模块调用方式了。但是做大型项目时，一个项目组的 workspace 可能有上千个文件，有几十万到几百万行代码。这种调用方式已经完全不够用了，学会新的组织方式迫在眉睫。
+
+接下来，我们就系统学习下，模块化的科学组织方式。
+
+## 项目模块化
+

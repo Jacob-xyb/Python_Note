@@ -4743,7 +4743,7 @@ print(sys.path)
 
 装饰器一直以来都是 Python 中很有用、很经典的一个feature，在工程中的应用也十分广泛，比如日志、缓存等等的任务都会用到。然而，在平常工作生活中，许多人常常因为其相对复杂的表示，对装饰器望而生畏，认为它“too fancy to learn”，实际并不如此。
 
-  ## 函数 -> 装饰器
+  ## 函数装饰器
 
 ### 函数核心
 
@@ -4772,4 +4772,200 @@ print(sys.path)
    # Got a message: hello world
    ```
 
+
+3. 在函数中定义函数，也就是函数的嵌套。
+
+   ```python
+   def func(message):
+       def get_message(message):
+           print('Got a message: {}'.format(message))
+       return get_message(message)
    
+   func('hello world')
+   
+   # 输出
+   Got a message: hello world
+   ```
+
+4. 函数的返回值也可以是函数对象（闭包）：
+
+   ```python
+   def func_colsure():
+       def get_message(message):
+   		print('Got a message: {}'.format(message))
+   	return get_message
+   send_message = func_closure()
+   send_message('hello world')
+   
+   # 输出
+   Got a message: hello world        
+   ```
+
+### 简单的装饰器
+
+装饰器的简单例子：
+
+```python
+def my_decorator(func):
+    def wrapper():
+        print('wrapper of decorator')
+        func()
+    return wrapper
+
+def greet():
+	print('hello world')
+    
+greet = my_decorator(greet)
+greet()
+
+# 输出
+wrapper of decorator
+hello world
+```
+
+`my_decorator()` 就是一个装饰器，它把真正需要执行的函数 greet() 包裹住，并且改变它的行为，但是原函数 greet() 不变。
+
+---
+
+上述代码在 Python 中更简单、更优雅的表示方式：
+
+```python
+def my_decorator(func):
+    def wrapper():
+        print('wrapper of decorator')
+        func()
+    return wrapper
+
+@my_decorator
+def greet():
+	print('hello world')
+    
+greet()
+
+# 输出
+wrapper of decorator
+hello world
+```
+
+这里的`@`，称之为语法糖，`@my_decorator` 就相当于前面的 `greet=my_decorator(greet)`语句，只不过更加简洁。因此，如果你的程序中有其它函数需要做类似的装饰，你只需在它们的上方加上@decorator就可以了，这样就大大提高了函数的重复利用和程序的可读性。
+
+#### 带参数的装饰器
+
+如果原函数 `greet()` 中有参数需要传递给装饰器，最简单的方式就是在对应的装饰器函数 `wrapper()` 上，加上相应的参数：
+
+```python
+def my_decorator(func):
+    def wrapper(message):
+        print('wrapper of decorator')
+        func(message)
+    return wrapper
+
+@my_decorator
+def greet(message):
+	print(message)
+    
+greet('hello world')
+
+# 输出
+wrapper of decorator
+hello world
+```
+
+如果还有另外一个函数，也需要使用 `my_decorator()` 装饰器，但是这个新的函数有两个或者多个参数，应该怎么办呢？
+
+```python
+@my_decorator
+def celebrate(name, message):
+    ...
+```
+
+事实上，通常情况下，会把 `*args` 和 `**kwargs`，作为装饰器内部函数 `wrapper()` 的参数。
+
+```python'
+def my_decorator(func):
+    def wrapper(*args, **kwargs):
+        print('wrapper of decorator')
+        func(*args, **kwargs)
+    return wrapper
+```
+
+### 带自定义参数的装饰器
+
+比如想要定义一个参数，来表示装饰器内部函数被执行的次数，那么就可以写成下面这种形式：
+
+```python
+def repeat(num):
+    def my_decorator(func):
+        def wrapper(*args, **kwargs):
+            for i in range(num):
+                print('wrapper of decorator')
+                func(*args, **kwargs)
+        return wrapper
+    return my_decorator
+
+@repeat(4)
+def greet(message):
+    print(message)
+    
+greet("hello world")
+```
+
+### 原函数还是原函数吗？
+
+```python
+print(greet.__name__)	# 'wrapper'
+```
+
+`greet()` 函数被装饰以后，它的`元信息`变了。元信息告诉我们“它不再是以前的那个 greet() 函数，而是被`wrapper() `函数取代了”。
+
+可以用内置的装饰器 `@functool.wrap`， 
+
+```python
+import functools
+
+def my_decorator(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print('wrapper of decorator')
+        func(*args, **kwargs)
+    return wrapper
+
+@my_decorator
+def greet(message):
+    print(message)
+   
+print(greet.__name__)	# greet
+```
+
+## 类装饰器
+
+类也可以作为装饰器，类装饰器主要依赖于函数 `__call__()`，每当你调用一个类的示例时，函数 `__call__()` 就会被执行一次。
+
+```python
+class Count:
+    def __init__(self, func):
+        self.func = func
+        self.num_calls = 0
+    
+    def __call__(self, *args, **kwargs):
+        self,num_calls += 1
+        print('num of calls is : {}'.format(self.num_calls))
+        return self.func(*args, **kwargs)
+
+@Count		# example = Count(example)
+def example():
+    print("hello world")
+
+example()
+
+# 输出
+num of calls is: 1
+hello world
+example()
+# 输出
+num of calls is: 2
+hello world
+```
+
+我们定义了类 Count，初始化时传入原函数 func()，而 `__call__()` 函数表示让变量 num_calls 自增 1，然后打印，并且调用原函数。因此，在我们第一次调用函数example() 时，num_calls 的值是 1，而在第二次调用时，它的值变成了 2。
+

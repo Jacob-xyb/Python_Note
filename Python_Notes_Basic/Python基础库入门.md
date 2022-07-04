@@ -29,6 +29,171 @@ Python 2.7 被确定为最后一个 Python 2.x 版本，它除了支持 Python 2
 
 # 基本数据类型
 
+## 数字
+
+Python 支持三种不同的数值类型：
+
+- **整型(int)** - 通常被称为是整型或整数，是正或负整数，不带小数点。Python3 整型是没有限制大小的，可以当作 Long 类型使用，所以 Python3 没有 Python2 的 Long 类型。布尔(bool)是整型的子类型。
+- **浮点型(float)** - 浮点型由整数部分与小数部分组成，浮点型也可以使用科学计数法表示（2.5e2 = 2.5 x 102 = 250）
+- **复数( (complex))** - 复数由实数部分和虚数部分构成，可以用a + bj,或者complex(a,b)表示， 复数的实部a和虚部b都是浮点型。
+
+我们可以使用十六进制和八进制来代表整数：
+
+```python
+>>> number = 0xA0F # 十六进制
+>>> number
+2575
+
+>>> number=0o37 # 八进制
+>>> number
+31
+```
+
+- Python支持复数，复数由实数部分和虚数部分构成，可以用a + bj,或者complex(a,b)表示， 复数的实部a和虚部b都是浮点型。
+
+### 数字类型转换
+
+有时候，我们需要对数据内置的类型进行转换，数据类型的转换，你只需要将数据类型作为函数名即可。
+
+- **int(x)** 将x转换为一个整数。
+- **float(x)** 将x转换到一个浮点数。
+- **complex(x)** 将x转换到一个复数，实数部分为 x，虚数部分为 0。
+- **complex(x, y)** 将 x 和 y 转换到一个复数，实数部分为 x，虚数部分为 y。x 和 y 是数字表达式。
+
+### 数字运算
+
+#### 数字计算表
+
+```python
+运算符  描述         示例      运算结果  
++       加法         5 + 8        13  
+-       减法         90 - 80      80  
+*       乘法         4 * 7        28  
+/       浮点数除法   7 / 2        3.5  
+//      整数除法     7 // 2       3  
+%       模（求余）   7 % 3        1  
+**      幂           3 ** 4       81  
+```
+
+#### 运算符
+
+- 位运算符
+
+以下假设变量a为60，变量b为13：
+
+```python
+a = 0011 1100
+
+b = 0000 1101
+
+-----------------
+
+a&b = 0000 1100
+
+a|b = 0011 1101
+
+a^b = 0011 0001
+
+~a  = 1100 0011
+```
+
+![](https://i.loli.net/2021/05/06/RGdbjl5uhk1rK3g.png)
+
+- 赋值运算符
+
+  `:=` 海象运算符，可在表达式内部为变量赋值。**Python3.8 版本新增运算符**
+
+  ```python
+  # 赋值表达式可以避免调用 len() 两次:
+  if (n := len(a)) > 10:
+      print(f"List is too long ({n} elements, expected <= 10)")
+  ```
+
+- 逻辑运算符
+
+| 运算符 | 逻辑表达式 |                             描述                             | 实例                    |
+| :----: | :--------: | :----------------------------------------------------------: | :---------------------- |
+|  and   |  x and y   | 布尔"与" - **如果 x 为 False，x and y 返回 x 的值，否则返回 y 的计算值**。 | (a and b) 返回 20。     |
+|   or   |   x or y   | 布尔"或" - **如果 x 是 True，它返回 x 的值，否则它返回 y 的计算值。** | (a or b) 返回 10。      |
+|  not   |   not x    | 布尔"非" - 如果 x 为 True，返回 False 。如果 x 为 False，它返回 True。 | not(a and b) 返回 False |
+
+- 身份运算符
+
+  身份运算符用于比较两个对象的存储单元
+
+| 运算符 | 描述                                        | 实例                                                         |
+| :----- | :------------------------------------------ | :----------------------------------------------------------- |
+| is     | is 是判断两个标识符是不是引用自一个对象     | **x is y**, 类似 **id(x) == id(y)** , 如果引用的是同一个对象则返回 True，否则返回 False |
+| is not | is not 是判断两个标识符是不是引用自不同对象 | **x is not y** ， 类似 **id(x) != id(y)**。如果引用的不是同一个对象则返回结果 True，否则返回 False。 |
+
+- 运算符优先级
+
+  以下表格列出了从最高到最低优先级的所有运算符， 相同单元格内的运算符具有相同优先级。 运算符均指二元运算，除非特别指出。 相同单元格内的运算符从左至右分组（除了幂运算是从右至左分组）：
+
+| 运算符                                                       | 描述                               |
+| :----------------------------------------------------------- | :--------------------------------- |
+| `(expressions...)`,`[expressions...]`, `{key: value...}`, `{expressions...}` | 圆括号的表达式                     |
+| `x[index]`, `x[index:index]`, `x(arguments...)`, `x.attribute` | 读取，切片，调用，属性引用         |
+| await x                                                      | await 表达式                       |
+| `**`                                                         | 乘方(指数)                         |
+| `+x`, `-x`, `~x`                                             | 正，负，按位非 NOT                 |
+| `*`, `@`, `/`, `//`, `%`                                     | 乘，矩阵乘，除，整除，取余         |
+| `+`, `-`                                                     | 加和减                             |
+| `<<`, `>>`                                                   | 移位                               |
+| `&`                                                          | 按位与 AND                         |
+| `^`                                                          | 按位异或 XOR                       |
+| `|`                                                          | 按位或 OR                          |
+| `in,not in, is,is not, <, <=, >, >=, !=, ==`                 | 比较运算，包括成员检测和标识号检测 |
+| `not x`                                                      | 逻辑非 NOT                         |
+| `and`                                                        | 逻辑与 AND                         |
+| `or`                                                         | 逻辑或 OR                          |
+| `if -- else`                                                 | 条件表达式                         |
+| `lambda`                                                     | lambda 表达式                      |
+| `:=`                                                         | 赋值表达式                         |
+
+and 拥有更高优先级:
+
+```python
+x = True
+y = False
+z = False
+ 
+if x or y and z:
+    print("yes")
+else:
+    print("no")
+    
+# 输出： yes
+```
+
+以上实例先计算 **y and z** 并返回 False ，然后 **x or False** 返回 True，输出结果：
+
+#### 注意事项
+
+- 不同类型的数混合运算时会将整数转换为浮点数：
+
+```python
+>>> 3 * 3.75 / 1.5
+7.5
+>>> 7.0 / 2
+3.5
+```
+
+- 在交互模式中，最后被输出的表达式结果被赋值给变量 **_** 。例如：
+
+```python
+>>> tax = 12.5 / 100
+>>> price = 100.50
+>>> price * tax
+12.5625
+>>> price + _
+113.0625
+>>> round(_, 2)
+113.06
+```
+
+此处， **_** 变量应被用户视为只读变量。
+
 ## 列表和元组
 
 列表和元组，都是一个可以**放置任意数据类型的有序集合**。
@@ -4968,4 +5133,55 @@ hello world
 ```
 
 我们定义了类 Count，初始化时传入原函数 func()，而 `__call__()` 函数表示让变量 num_calls 自增 1，然后打印，并且调用原函数。因此，在我们第一次调用函数example() 时，num_calls 的值是 1，而在第二次调用时，它的值变成了 2。
+
+## 装饰器的嵌套
+
+实际上，Python也支持多个装饰器，比如：
+
+```python
+@decorator1
+@decorator2
+@decorator3
+def func():
+	...
+```
+
+等效于：
+
+```python
+decorator1(decorator2(decorator3(func)))
+```
+
+之前的单个 ’hello world' 可以写成：
+
+```python
+import functools
+def my_decorator1(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print('execute decorator1')
+        func(*args, **kwargs)
+    return wrapper
+
+def my_decorator2(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print('execute decorator2')
+        func(*args, **kwargs)
+        return wrapper
+    
+@my_decorator1
+@my_decorator2
+def greet(message):
+	print(message)
+    
+greet('hello world')
+
+# 输出
+execute decorator1
+execute decorator2
+hello world
+```
+
+
 

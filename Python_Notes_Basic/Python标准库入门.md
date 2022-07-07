@@ -18,7 +18,6 @@ print(os.name)  # nt
 
   `os.getcwd()`
   
-
 -  获取指定路径文件列表
 
   `os.listdir(path)`
@@ -71,6 +70,10 @@ import shutil
 shutil.rmtree([dir])
 ```
 
+#### 创建目录
+
+`os.makedirs(path, exist_ok=False)`  创建多级目录
+
 ## os.path.
 
 ![](https://img-blog.csdnimg.cn/20210406141640898.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1ODAyMDgx,size_16,color_FFFFFF,t_70)
@@ -103,7 +106,6 @@ print(os.path.dirname(p))	# ..\Python_Note\Python_Notes_Basic
   # .ipynb_checkpoints
   ```
 
-  
 
 # sys
 

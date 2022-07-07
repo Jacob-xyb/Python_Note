@@ -5183,5 +5183,83 @@ execute decorator2
 hello world
 ```
 
+## 装饰器的用法实例
 
+### 身份认证
+
+```python
+import functools
+
+def authenticate(func):
+    @functools.wraps(func):
+        def wrapper(*args, **kwargs):
+            request = args[0]
+            if check_user_logged_in(request):  # 如果用户处于登陆状态
+                return func(*args, **kwargs)  # 执行函数 post_comment
+            else:
+                raise Exception('Authentication failed')
+        return wrapper
+
+@authenticate
+def post_comment(request, ...)
+	...
+```
+
+这段代码中，我们定义了装饰器 `authenticate`；而函数 `post_comment()` ，则表示发表用户对某篇文章的评论。每次调用这个函数前，都会先检查用户是否处于登录状态，如果是登录状态，则允许这项操作；如果没有登录，则不允许。
+
+### 日志记录
+
+日志记录同样是很常见的一个案例。在实际工作中，如果你怀疑某些函数的耗时过长，导致整个系统的 latency（延迟）增加，所以想在线上测试某些函数的执行时间，那么，装饰器就是一种很常用的手段。
+
+```python
+import time
+import functools
+
+def log_execution_time(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        res = func(*args, **kwargs)
+        end = time.perf_counter()
+        print('{} took {} ms'.format(func.__name__, (end - start) * 1e-3))
+        return res
+    return wrapper
+
+@log_execution_time
+def calculate_similarity(items):
+    ...
+```
+
+这里，装饰器 log_execution_time 记录某个函数的运行时间，并返回其执行结果。如果你想计算任何函数的执行时间，在这个函数上方加上@log_execution_time即可。
+
+### 输入合理性检测
+
+在大型公司的机器学习框架中，我们调用机器集群进行模型训练前，往往会用装饰器对其输入（往往是很长的 json 文件）进行合理性检查。这样就可以大大避免，输入不正确对机器造成的巨大开销。
+
+```python
+import functools
+
+def validation_check(input):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        ...  # 检查输入是否合法
+        
+@validation_check
+def neural_network_training(param1, param2, ...):
+    ...
+```
+
+### 缓存
+
+LRU cache，在 Python 中的表示形式是 `@lru_cache`。`@lru_cache` 会缓存进程中的函数参数和结果，当缓存满了以后，会删除 least recenly used 的数据。
+
+大型公司服务器端的代码中往往存在很多关于设备的检查，比如你使用的设备是安卓还是 iPhone，版本号是多少。这其中的一个原因，就是一些新的 feature，往往只在某些特定的手机系统或版本上才有（比如 Android v200+）。
+
+这样一来，我们通常使用缓存装饰器，来包裹这些检查函数，避免其被反复调用，进而提高程序运行效率，比如写成下面这样：
+
+```python
+@lru_cache
+def check(param1, param2, ...)：  # 检查用户设备类型，版本号
+	...
+```
 

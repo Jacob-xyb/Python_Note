@@ -5102,7 +5102,9 @@ def greet(message):
 print(greet.__name__)	# greet
 ```
 
-## 类装饰器
+## 类有关装饰器
+
+### 类装饰器
 
 类也可以作为装饰器，类装饰器主要依赖于函数 `__call__()`，每当你调用一个类的示例时，函数 `__call__()` 就会被执行一次。
 
@@ -5126,6 +5128,7 @@ example()
 # 输出
 num of calls is: 1
 hello world
+
 example()
 # 输出
 num of calls is: 2
@@ -5133,6 +5136,108 @@ hello world
 ```
 
 我们定义了类 Count，初始化时传入原函数 func()，而 `__call__()` 函数表示让变量 num_calls 自增 1，然后打印，并且调用原函数。因此，在我们第一次调用函数example() 时，num_calls 的值是 1，而在第二次调用时，它的值变成了 2。
+
+### 类函数装饰其他函数
+
+在类里面定义个函数，用来装饰其它函数，严格意义上说不属于类装饰器。
+
+```python
+import functools
+
+class SimpleClass(object):
+    @staticmethod
+    def my_decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            print('wrapper of decorator')
+            func(*args, **kwargs)
+        return wrapper
+
+@SimpleClass.my_decorator
+def greet(message):
+    print(message)
+    
+greet('hello world')
+
+# 输出
+wrapper of decorator
+hello world
+```
+
+### 装饰器装饰同一个类里的函数
+
+背景：想要通过装饰器修改类里的self属性值。
+
+```python
+import functools
+
+class SimpleClass(object):
+    def __init__(self):
+        self.message_call = 0
+    
+    # @staticmethod  
+    # 此处不能含有 staticmethod，因为装饰器需要传入 类实例
+    # 也不能写成 my_decorator(self, func), 因为传入参数只有func
+    def my_decorator(func):
+        @functools.wraps(func)
+        def wrapper(self, *args, **kwargs):  # self,接收 SimpleClass 里的self,也就是类实例
+            self.message_call += 1
+            print('message_call is {}'.format(self.message_call))
+            return func(self, *args, **kwargs)
+        return wrapper
+
+    @my_decorator
+    def greet(self, message):
+        print(message)
+    
+test = SimpleClass()
+test.greet('hello world')
+test.greet('hello world')
+
+# 输出
+message_call is 1
+hello world
+message_call is 2
+hello world
+```
+
+其中类在初始化时，会装饰每个需要被装饰的函数
+
+```python
+import functools
+
+class SimpleClass(object):
+    def __init__(self):
+        self.message_call = 0
+    
+    # @staticmethod  
+    # 此处不能含有 staticmethod，因为装饰器需要传入 类实例
+    # 也不能写成 my_decorator(self, func), 因为传入参数只有func
+    def my_decorator(func):
+        print("弄懂调用次数")
+        @functools.wraps(func)
+        def wrapper(self, *args, **kwargs):  # self,接收 SimpleClass 里的self,也就是类实例
+            self.message_call += 1
+            print('message_call is {}'.format(self.message_call))
+            return func(self, *args, **kwargs)
+        return wrapper
+
+    @my_decorator
+    def greet1(self, message):
+        print(message)
+        
+    @my_decorator
+    def greet2(self, message):
+        print(message)
+    
+test = SimpleClass()
+
+# 输出
+弄懂调用次数
+弄懂调用次数
+```
+
+# TODO
 
 ## 装饰器的嵌套
 

@@ -162,5 +162,49 @@ print(time.strftime("%Y-%m-%d  %H:%M:%S", t))
 # 2022-06-22  02:17:38
 ```
 
+# math
+
+## 数学常数
+
+```python
+import math
+
+# 自然底数
+print(math.e)  # 2.718281828459045
+# 圆周率 π
+print(math.pi)  # 3.141592653589793
+```
+
+## 数学运算
+
+### 取绝对值
+
+```python
+import math
+
+# math.fabs() 用于获得绝对值：
+print(math.fabs(98.6))  # 98.6
+print(math.fabs(-271.1))  # 271.1
+
+# abs() 更为方便
+print(abs(-271.1))  # 271.1
+```
+
+### 取整
+
+```python
+import math
+
+# math.floor() 向下取整， 
+print(math.floor(98.6))  # 98
+print(math.floor(-271.1))  # -272
+
+# math.ceil() 向上取整
+print(math.ceil(98.6))  # 99
+print(math.ceil(-271.1))  # -271
+```
+
+
+
 
 

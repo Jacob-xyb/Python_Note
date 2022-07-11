@@ -47,7 +47,7 @@ PermissionError: [WinError 5] 拒绝访问。
 FileNotFoundError: [WinError 2] 系统找不到指定的文件。
 ```
 
-#### 删除空目录
+#### 删除空文件夹
 
 `os.rmdir(dir)`
 
@@ -59,7 +59,7 @@ os.rmdir([dir])
 OSError: [WinError 145] 目录不是空的。
 ```
 
-#### 删除非空目录
+#### 删除非空文件夹
 
 **慎用！！！删除时不会有任何提示**
 
@@ -113,7 +113,9 @@ print(os.path.dirname(p))	# ..\Python_Note\Python_Notes_Basic
 
 ## 获取时间
 
-### 计算机内部时间
+### 时间戳(timestamp)
+
+通常来说，时间戳表示的是从**格林威治时间1970年1月1日00:00:00**  (**北京时间1970年01月01日08时00分00秒**)  开始按秒计算的偏移量
 
 `time.time() -> float`
 
@@ -122,6 +124,20 @@ print(os.path.dirname(p))	# ..\Python_Note\Python_Notes_Basic
 ```python
 import time
 time.time()		# 1655863478.715323
+```
+
+### 进程运行时间
+
+`time.perf_counter()` 
+
+Python3.8 不再支持time.clock
+
+```python
+import time
+a = time.perf_counter()
+time.sleep(3)
+b = time.perf_counter()
+print(b-a)  # 3.0083799999999883
 ```
 
 ### 易读方式获取时间

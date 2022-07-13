@@ -125,3 +125,31 @@ for line in lines:
     f.close()
 ```
 
+### 读写csv
+
+csv 文件由 `,` 隔开
+
+- 写
+
+```python
+with open('data.csv', 'w') as f:
+    f.write("Name,Gender,Age\n")
+    f.write("Jacob,Male,18\n")
+```
+
+![image-20220713111212956](https://s2.loli.net/2022/07/13/uqgQRLxOUWpKiYz.png)
+
+- 读
+
+```python
+with open('data.csv', 'r') as f:
+    context = f.read()		# 'Name,Gender,Age\nJacob,Male,18\n'
+    print(context)
+    
+"""
+Name,Gender,Age
+Jacob,Male,18
+
+"""
+```
+

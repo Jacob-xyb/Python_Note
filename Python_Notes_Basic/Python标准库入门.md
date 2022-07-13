@@ -279,6 +279,101 @@ print(time.strptime("2022-07-12 20:09:30", "%Y-%m-%d %X"))
 # time.struct_time(tm_year=2022, tm_mon=7, tm_mday=12, tm_hour=20, tm_min=9, tm_sec=30, tm_wday=1, tm_yday=193, tm_isdst=-1)
 ```
 
+## 计算时间间隔
+
+**Python 3.8 已移除 clock() 方法 可以使用 time.perf_counter() 或 time.process_time() 方法替代。**
+
+### time.time()、time.perf_counter() 、time.process_time()
+
+- **time.time()**
+
+返回自纪元以来的秒数作为浮点数，但是时期的具体日期和闰秒的处理取决于使用的平台。比如：在Windows和大多数Unix系统上，纪元是1970年1月1日00:00:00（UTC），并且闰秒不计入自纪元以来的秒数，这也通常被称为Unix时间。我们要可以通过 `time.gmtime(0)` 查看自己平台上的纪元。
+
+```python
+print(time.gmtime(0))		
+# time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
+print(time.asctime(time.gmtime(0)))  # Thu Jan  1 00:00:00 1970
+```
+
+通常用time()来做时间的格式输出，也会用在一些测试代码时间上面。在我们测试代码的时候需要调用两次，做差值，`注意它会把sleep()的时间也算进去`。
+
+- **time.perf_counter()**
+
+返回性能计数器的值（以小数秒为单位）作为浮点数，即具有最高可用分辨率的时钟，以测量短持续时间。 它确实包括睡眠期间经过的时间，并且是系统范围的。
+通常perf_counter()用在测试代码时间上，具有最高的可用分辨率。不过因为返回值的参考点是以进程开始进行计算，因此我们测试代码的时候需要调用两次，做差值。
+`perf_counter()会包含sleep()休眠时间`，适用测量短持续时间
+
+- **time.process_time()**
+
+也是返回进程经过时间，但是 `time.process_time()不包含sleep()休眠时间` 。
+
+```python
+import time
+
+def procedure():
+    time.sleep(2.5)
+
+# measure wall time
+t0 = time.time()
+procedure()
+print (time.time() - t0, "seconds wall time")
+    
+# measure perfer time
+t0 = time.perf_counter()
+procedure()
+print (time.perf_counter() - t0, "seconds perfer time")
+
+# measure process time 
+t0 = time.process_time()
+procedure()
+print (time.process_time() - t0, "seconds process time")
+
+
+
+"""
+2.501197099685669 seconds wall time
+2.511219500000001 seconds perfer time
+0.0 seconds process time
+"""
+```
+
+### 纳秒计时
+
+此外Python3.7开始还提供了以上三个方法精确到纳秒的计时。分别是：
+
+`time.time_ns()`、`time.perf_counter_ns()` 、`time.process_time_ns()`
+
+**返回的均是整型。**
+
+```python
+import time
+
+def procedure():
+    time.sleep(2.5)
+
+# measure wall time
+t0 = time.time_ns()
+procedure()
+print (time.time_ns() - t0, "seconds wall time")
+    
+# measure perfer time
+t0 = time.perf_counter_ns()
+procedure()
+print (time.perf_counter_ns() - t0, "seconds perfer time")
+
+# measure process time 
+t0 = time.process_time_ns()
+procedure()
+print (time.process_time_ns() - t0, "seconds process time")
+
+
+"""
+2513770100 seconds wall time
+2508415400 seconds perfer time
+0 seconds process time
+"""
+```
+
 # math
 
 ## 数学常数

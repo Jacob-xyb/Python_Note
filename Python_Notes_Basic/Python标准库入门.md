@@ -74,6 +74,8 @@ shutil.rmtree([dir])
 
 `os.makedirs(path, exist_ok=False)`  创建多级目录
 
+注意：如果 path 形如： `D:tmp\\data.txt` 就会创建名为 `data.txt` 的文件夹。
+
 ## os.path.
 
 ![](https://img-blog.csdnimg.cn/20210406141640898.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1ODAyMDgx,size_16,color_FFFFFF,t_70)

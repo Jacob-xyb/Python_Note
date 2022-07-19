@@ -5237,7 +5237,87 @@ test = SimpleClass()
 弄懂调用次数
 ```
 
-# TODO
+### 定义一个类装饰器，装饰类中的函数，默认调用__get__方法
+
+实际上把类方法变成属性了，还记得类属性装饰器吧，@property
+
+下面自已做一个property
+
+```python
+class Decrator(object):
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, instance, owner):
+        '''
+        instance:代表实例，sum中的self
+        owner：代表类本身，Test类
+        
+        '''
+        print('调用的是get函数')
+        return self.func(instance)     # instance就是Test类的self
+
+
+class Test(object):
+    def __init__(self):
+        self.result = 0
+
+    @Decrator
+    def sum(self):
+        print('There is the Func in the Class !')
+
+t = Test()
+print(t.sum)            # 众所周知，属性是不加括号的,sum真的变成了属性
+
+# 输出
+调用的是get函数
+There is the Func in the Class !
+None
+```
+
+做一个求和属性sum，统计所有输入的数字的和
+
+```python
+class Decrator(object):
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, instance, owner):
+        print('调用的是get函数')
+        return self.func(instance)
+
+
+class Test(object):
+    def __init__(self, *args, **kwargs):
+        self.value_list = []
+        if args:
+            for i in args:
+                if str(i).isdigit():
+                    self.value_list.append(i)
+        if kwargs:
+            for v in kwargs.values():
+                if str(v).isdigit():
+                    self.value_list.append(v)
+
+    @Decrator
+    def sum(self):
+        result = 0
+        print(self.value_list)
+        for i in self.value_list:
+            result += i
+
+        return result
+
+
+t = Test(1, 2, 3, 4, 5, 6, 7, 8, i=9, ss=10, strings='lll')
+
+print(t.sum)
+
+# 输出
+调用的是get函数
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+55
+```
 
 ## 装饰器的嵌套
 
@@ -5368,3 +5448,92 @@ def check(param1, param2, ...)：  # 检查用户设备类型，版本号
 	...
 ```
 
+# metaclass
+
+meta-class 的 meta 这个词根，起源于希腊语词汇 meta，包含下面两种意思：
+
+1. **“Beyond”**，例如技术词汇 metadata，意思是描述数据的超越数据；
+2. **“Change”**，例如技术词汇 metamorphosis，意思是改变的形态。
+
+## Python 底层语言设计层面是如何实现metaclass 的？
+
+metaclass 能够拦截 Python 类的定义
+
+要理解 metaclass 的底层原理，你需要深入理解 Python 类型模型。
+
+### 第一，所有的 Python 的用户定义类，都是 type 这个类的实例。
+
+事实上，类本身不过是一个名为 type 类的实例。在 Python 的类型世界里，type 这个类就是造物的上帝。
+
+```python
+class MyClass:
+    pass
+
+instance = MyClass()
+
+print(type(instance))  # <class '__main__.MyClass'>
+print(type(MyClass))  # <class 'type'>
+```
+
+### 第二，用户自定义类，只不过是 type 类的 \__call__ 运算符重载。
+
+当我们定义一个类的语句结束时，真正发生的情况，是Python 调用 type 的 `__call__`  运算符。简单来说，当你定义一个类时，写成下面这样时：
+
+```python
+class MyClass:
+    data = 1
+```
+
+Python 真正执行的是下面这段代码：
+
+```python
+class = type(classname, superclasses, attributedict)
+```
+
+这里等号右边的type(classname, superclasses,attributedict)，就是 type 的 `__call__` 运算符重载，它会进一步调用：
+
+```python
+type.__new__(typeclass, classname, superclasses, attributedict)
+type.__init__(class, classname, superclasses, attributedict)
+```
+
+代码验证:
+
+```python
+class MyClass:
+    data = 1
+    
+instance = MyClass()
+print(instance)  # <__main__.MyClass object at 0x000002016D084880>
+
+print(instance.data)  # 1
+```
+
+```python
+MyClass = type('MyClass', (), {'data': 1})
+
+instance = MyClass()
+print(instance)  # <__main__.MyClass object at 0x0000016ED1D51640>
+
+print(instance.data)  # 1
+```
+
+### 第三，metaclass 是 type 的子类，通过替换type 的 \__call__ 运算符重载机制，“超越变形”正常的类。
+
+其实，理解了以上几点，我们就会明白，正是 Python 的类创建机制，给了 metaclass 大展身手的机会。一旦你把一个类型 MyClass 的 metaclass 设置成 MyMeta，MyClass 就不再由原生的 type 创建，而是会调用 MyMeta 的 `__call__` 运算符重载。
+
+```python
+class = type(classname, superclasses, attributedict)
+# 变为了
+class = MyMeta(classname, superclasses, attributedict)
+```
+
+## 使用 metaclass 的风险
+
+前面的篇幅，我都是在讲 metaclass 的原理和优点。的的确确，只有深入理解 metaclass 的本质，你才能用好 metaclass。而不幸的是，正如我开头所说，深入理解 metaclass 的 Python 开发者，只占了 0.1% 不到。
+
+不过，凡事有利必有弊，尤其是 metaclass 这样“逆天”的存在。正如你所看到的那样，metaclass 会"扭曲变形"正常的 Python 类型模型。所以，如果使用不慎，对于整个代码库造成的风险是不可估量的。
+
+换句话说，metaclass 仅仅是给小部分 Python 开发者，在开发框架层面的 Python 库时使用的。而在应用层，metaclass 往往不是很好的选择。
+
+也正因为这样，据我所知，在很多硅谷一线大厂，使用Python metaclass 需要特例特批。

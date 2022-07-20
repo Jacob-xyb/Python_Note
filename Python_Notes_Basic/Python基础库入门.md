@@ -825,6 +825,26 @@ arr[0][0] = 9
 print(arr)		# [[9, 5], [9, 5], [9, 5]]
 ```
 
+2. **两个列表排序**
+
+```python
+l1 = [1, 2, 3, 4]
+l2 = ['c', 'a', 'b', 'd']
+
+l = list(zip(l1, l2))
+l.sort(key=lambda x:x[1])
+print(l)		# [(2, 'a'), (3, 'b'), (1, 'c'), (4, 'd')]
+
+# 还原
+tmp = list(zip(*l))
+l1 = list(tmp[0])
+l2 = list(tmp[1])
+print(l1)		# [2, 3, 1, 4]
+print(l2)		# ['a', 'b', 'c', 'd']
+```
+
+
+
 ### Tuple 函数一览
 
 元组的函数 几乎被 列表给覆盖，唯一区别就是使元组发生改变的函数元组没有。
@@ -1343,10 +1363,13 @@ print(d)
 
 #### 字典的排序
 
-- **按key排序，取value**
-
 ```python
 d = {'2': 'FmThic:@2', '1': 'layer_1_thickness(A)'}
+
+d_sorted_by_key = sorted(d.items(), key=lambda x: x[0]) # 根据字典键的升序排序
+d_sorted_by_value = sorted(d.items(), key=lambda x: x[1]) # 根据字典值的升序排序
+
+# 默认是键
 print(sorted(d.items()))		# [('1', 'layer_1_thickness(A)'), ('2', 'FmThic:@2')]
 # 如果只想取value
 print(list(zip(*sorted(d.items()))))	# [('1', '2'), ('layer_1_thickness(A)', 'FmThic:@2')]

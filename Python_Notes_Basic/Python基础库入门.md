@@ -7,7 +7,7 @@ Python 的设计具有很强的可读性，相比其他语言经常使用英文�
 - **Python 是一种解释型语言：** 这意味着开发过程中没有了编译这个环节。类似于PHP和Perl语言。
 - **Python 是交互式语言：** 这意味着，您可以在一个 Python 提示符 **>>>** 后直接执行代码。
 - **Python 是面向对象语言:** 这意味着Python支持面向对象的风格或代码封装在对象的编程技术。
-- **Python 是初学者的语言：**Python 对初级程序员而言，是一种伟大的语言，它支持广泛的应用程序开发，从简单的文字处理到 WWW 浏览器再到游戏。
+- **Python 是初学者的语言：** Python 对初级程序员而言，是一种伟大的语言，它支持广泛的应用程序开发，从简单的文字处理到 WWW 浏览器再到游戏。
 
 ## Python 发展历史
 
@@ -807,6 +807,24 @@ print(l3)		# ['0', [1, 2, 3], ['x', 'y', 'z']]
 print(l4)		# ['0', [0, 1, 2, 3], ['x', 'y', 'z']]
 ```
 
+### List 技巧和应用
+
+1. **一行代码生成列表**
+
+```python
+arr = [[0] * w for _ in range(h)]
+```
+
+常见错误：
+
+```python
+# 以下方式是复制了当前数组的引用
+arr = [[1, 5]] * 3
+print(arr)		# [[1, 5], [1, 5], [1, 5]]
+arr[0][0] = 9
+print(arr)		# [[9, 5], [9, 5], [9, 5]]
+```
+
 ### Tuple 函数一览
 
 元组的函数 几乎被 列表给覆盖，唯一区别就是使元组发生改变的函数元组没有。
@@ -1236,35 +1254,16 @@ print('site = ', site)
 # site =  {'name': '菜鸟教程', 'alexa': 10000}
 ```
 
+### Dict 技巧和应用
+
+1. **字典推导式**
+
+```python
+d = {k: k for k in range(3)}
+print(d)  # {0: 0, 1: 1, 2: 2}
+```
+
 ### Set 函数一览
-
-#### 集合推导式
-
-Set comprehension
-
-```python
-s1 = {x for x in 'abra1-FSG_49Pprofile.txtcadabra' if x not in 'abc'}
-s1	# {'r', 'd'}
-```
-
-#### 集合运算
-
-```python
-a = set('abracadabra')
-b = set('alacazam')
-# 集合是无序的
-print(a)	# {'b', 'c', 'd', 'a', 'r'}
-print(b)	# {'m', 'c', 'z', 'l', 'a'}
-
-# a有 b没有
-print(a - b)	# {'b', 'd', 'r'}
-# a 或 b 有
-print(a | b)	# {'l', 'm', 'b', 'c', 'z', 'd', 'a', 'r'}
-# a 和 b 都有
-print(a & b)	# {'c', 'a'}
-# a b 不同时有
-print(a ^ b)	# {'b', 'm', 'z', 'l', 'd', 'r'}
-```
 
 #### len(set)
 
@@ -1284,6 +1283,34 @@ print(z)		# {'cherry', 'banana'}
 
 # 其实就是：a有 b没有
 print(x - y)	# {'cherry', 'banana'}
+```
+
+### Set 技巧和应用
+
+1. **集合推导式**
+
+```python
+s1 = {x for x in 'abracadabra' if x not in 'abc'}
+s1	# {'d', 'r'}
+```
+
+2. **集合运算**
+
+```python
+a = set('abracadabra')
+b = set('alacazam')
+# 集合是无序的
+print(a)	# {'b', 'c', 'd', 'a', 'r'}
+print(b)	# {'m', 'c', 'z', 'l', 'a'}
+
+# a有 b没有
+print(a - b)	# {'b', 'd', 'r'}
+# a 或 b 有
+print(a | b)	# {'l', 'm', 'b', 'c', 'z', 'd', 'a', 'r'}
+# a 和 b 都有
+print(a & b)	# {'c', 'a'}
+# a b 不同时有
+print(a ^ b)	# {'b', 'm', 'z', 'l', 'd', 'r'}
 ```
 
 ### 补充
@@ -1599,7 +1626,7 @@ r'\b'.islower()				# True
 
 isupper() 方法检测字符串中所有的字母是否都为大写。
 
-#### str.isdigit()、s.isdecimal()、str.isnumeric()、
+#### str.isdigit()、s.isdecimal()、str.isnumeric()
 
 **str.isdigit()** 检测字符串是否只包含数字（即不接受其他一切非 **[0-9]** 元素）。
 
@@ -1617,7 +1644,7 @@ isupper() 方法检测字符串中所有的字母是否都为大写。
 
 判断十进制数字
 
-**True**: Unicode数字，，全角数字（双字节）
+**True**: Unicode数字，全角数字（双字节）
 
 **False**: 罗马数字，汉字数字，小数
 
@@ -1633,29 +1660,29 @@ isupper() 方法检测字符串中所有的字母是否都为大写。
 
 ```python
 num = "1"  #unicode
-num.isdigit()   # True
-num.isdecimal() # True
-num.isnumeric() # True
+print(num.isdigit())   # True
+print(num.isdecimal()) # True
+print(num.isnumeric()) # True
 
 num = "1" # 全角
-num.isdigit()   # True
-num.isdecimal() # True
-num.isnumeric() # True
+print(num.isdigit())   # True
+print(num.isdecimal()) # True
+print(num.isnumeric()) # True
 
 num = b"1" # byte
-num.isdigit()   # True
-num.isdecimal() # AttributeError 'bytes' object has no attribute 'isdecimal'
-num.isnumeric() # AttributeError 'bytes' object has no attribute 'isnumeric'
+print(num.isdigit())   # True
+print(num.isdecimal()) # AttributeError 'bytes' object has no attribute 'isdecimal'
+print(num.isnumeric()) # AttributeError 'bytes' object has no attribute 'isnumeric'
 
 num = "IV" # 罗马数字
-num.isdigit()   # False
-num.isdecimal() # False
-num.isnumeric() # False
+print(num.isdigit())   # False
+print(num.isdecimal()) # False
+print(num.isnumeric()) # False
 
 num = "四" # 汉字
-num.isdigit()   # False
-num.isdecimal() # False
-num.isnumeric() # True
+print(num.isdigit())   # False
+print(num.isdecimal()) # False
+print(num.isnumeric()) # True
 ```
 
 - **isdigit 和 isnumeric的区别?**

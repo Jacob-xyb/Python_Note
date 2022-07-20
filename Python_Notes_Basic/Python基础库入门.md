@@ -2110,6 +2110,53 @@ Sjoerd     ==>       4127
 
 算是python3最常用的字符串了吧，语法：`f'{变量}'`
 
+### 通配符匹配
+
+- `fnmatch` 模块
+
+```python
+from fnmatch import fnmatch, fnmatchcase
+print(fnmatch('hello.py', '*.py'))      # True
+print(fnmatch('hello.py', '?ello.py'))  # True
+print(fnmatch('nginx-access-20180609.log', 'nginx-access-2018060[0-9]*'))	# True
+```
+
+​		但是有一个问题fnmatch()函数在不同底层操作系统下使用的时候对大小写敏感, 不同的系统表现情况不同，如下所示:
+
+```python
+from fnmatch import fnmatch, fnmatchcase
+
+# On OS X (Mac)
+print(fnmatch('test.txt', '*.TXT'))		# False
+
+# On Windows
+print(fnmatch('test.txt', '*.TXT'))		# True
+```
+
+​		fnmatchcase() 会严格按照大小写来匹配
+
+```python
+from fnmatch import fnmatch, fnmatchcase
+
+# On OS X (Mac)
+print(fnmatchcase('test.txt', '*.TXT'))		# False
+
+# On Windows
+print(fnmatchcase('test.txt', '*.TXT'))		# False
+```
+
+- `glob` 模块
+
+  如果代码需要做文件名的匹配，最好使用glob模块
+
+```python
+# 假设文件列表为： file1.py  file2.py  file3.py  file4.py
+
+import glob
+pyfiles = glob.glob('/opt/*.py')
+print(pyfiles)		# ['/opt/file1.py', '/opt/file2.py', '/opt/file3.py', '/opt/file4.py']
+```
+
 ### 补充
 
 #### 字符串拼接效率问题

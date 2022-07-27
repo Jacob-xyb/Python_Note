@@ -5766,4 +5766,211 @@ next_1 = 8, next_3 = 512
 
 #### 查看数字在 list 中的位置
 
-#### TODO
+常规做法：枚举每个元素和它的 index，判断后加入 result，最后返回。
+
+```python
+def index_normal(L, target):
+	result = []
+	for i, num in enumerate(L):
+		if num == target:
+			result.append(i)
+	return result
+
+print(index_normal([1, 6, 2, 4, 5, 2, 8, 6, 3, 2], 2))
+# [2, 5, 9]
+```
+
+使用生成器：
+
+```python
+def index_generator(L, target):
+	for i, num in enumerate(L):
+		if num == target:
+			yield i
+print(list(index_generator([1, 6, 2, 4, 5, 2, 8, 6, 3, 2], 2)))
+# [2, 5, 9]
+```
+
+在 Python 语言规范中，用更少、更清晰的代码实现相同功能，一直是被推崇的做法，因为这样能够很有效提高代码的可读性，减少出错概率，也方便别人快速准确理解你的意图。
+
+#### 判断一个序列是否为另一个序列的子序列
+
+先来解读一下这个问题本身。序列就是列表，子序列则指的是，一个列表的元素在第二个列表中都按顺序出现，但是并不必挨在一起。举个例子，[1, 3, 5] 是 [1, 2, 3, 4, 5] 的子序列，[1, 4, 3] 则不是。
+
+常规算法是贪心算法。我们维护两个指针指向两个列表的最开始，然后对第二个序列一路扫过去，如果某个数字和第一个指针指的一样，那么就把第一个指针前进一步。第一个指针移出第一个序列最后一个元素的时候，返回 True，否则返回 False。
+
+不过，这个算法正常写的话，写下来怎么也得十行左右。
+
+那么如果我们用迭代器和生成器呢？
+
+```python
+def is_subsequence(a, b):
+    b = iter(b)
+    return all(i in b for i in a)
+
+print(is_subsequence([1, 3, 5], [1, 2, 3, 4, 5]))	# True
+print(is_subsequence([1, 4, 3], [1, 2, 3, 4, 5]))	# False
+```
+
+这简短的几行代码，你是不是看得一头雾水，先将代码分解：
+
+```python
+def is_subsequence(a, b):
+    b = iter(b)
+    print(b)
+    
+    gen = (i for i in a)
+    print(gen)
+    for i in gen:
+        print(i)
+        
+    gen = ((i in b) for i in a)
+    print(gen)
+    for i in gen:
+        print(i)
+        
+    return all(((i in b) for i in a))
+
+print(is_subsequence([1, 3, 5], [1, 2, 3, 4, 5]))
+print()
+print(is_subsequence([1, 4, 3], [1, 2, 3, 4, 5]))
+
+"""
+<list_iterator object at 0x0000024FEC08A490>
+<generator object is_subsequence.<locals>.<genexpr> at 0x0000024FED46F890>
+1
+3
+5
+<generator object is_subsequence.<locals>.<genexpr> at 0x0000024FED46FB30>
+True
+True
+True
+False
+
+<list_iterator object at 0x0000024FEC08A460>
+<generator object is_subsequence.<locals>.<genexpr> at 0x0000024FED46FB30>
+1
+4
+3
+<generator object is_subsequence.<locals>.<genexpr> at 0x0000024FED46F890>
+True
+True
+False
+False
+"""
+```
+
+首先，第二行的 `b = iter(b)`，把列表 b 转化成了一个迭代器，为了后面的指针操作。
+
+接下来的 `gen = (i for i in a)` 产生一个生成器，这个生成器可以遍历对象 a，因此能够输出 1, 3, 5。而  (i in b) 需要好好揣摩，这里你是不是能联想到 for in 语句？
+
+没错，这里的 `(i in b)` ，大致等价于下面这段代码：
+
+```python
+while True:
+	val = next(b)
+	if val == i:
+		yield True
+```
+
+这里非常巧妙地利用生成器的特性，next() 函数运行的时候，保存了当前的指针。比如再看下面这个示例：
+
+```python
+b = (i for i in range(5))
+
+print(2 in b)	# True	
+print(4 in b)	# True
+print(3 in b)	# False
+```
+
+至于最后的 all() 函数，就很简单了。它用来判断一个迭代器的元素是否全部为 True，如果是则返回 True，否则就返回 False.
+
+## 总结
+
+此节讲了四种不同的对象，分别是容器、可迭代对象、迭代器和生成器。
+
+容器是可迭代对象，可迭代对象调用 iter() 函数，可以得到一个迭代器。迭代器可以通过 next() 函数来得到下一个元素，从而支持遍历。
+
+生成器是一种特殊的迭代器（注意这个逻辑关系反之不成立）。使用生成器，你可以写出来更加清晰的代码；合理使用生成器，可以降低内存占用、优化程序结构、提高程序速度。
+
+生成器在 Python 2 的版本上，是协程的一种重要实现方式；而 Python 3.5 引入 async await 语法糖后，生成器实现协程的方式就已经落后了。
+
+# Python 协程
+
+## 从一个爬虫说起
+
+```python
+import time
+
+def crawl_page(url):
+    print('crawling {}'.format(url))
+    sleep_time = int(url.split('_')[-1])
+    time.sleep(sleep_time)
+    print('OK {}'.format(url))
+    
+def main(urls):
+    for url in urls:
+        crawl_page(url)
+        
+%time main(['url_1', 'url_2', 'url_3', 'url_4'])
+
+"""
+crawling url_1
+OK url_1
+crawling url_2
+OK url_2
+crawling url_3
+OK url_3
+crawling url_4
+OK url_4
+CPU times: total: 0 ns
+Wall time: 10 s
+"""
+```
+
+注意：本节的主要目的是协程的基础概念，因此我们简化爬虫的 `scrawl_page` 函数为休眠数秒，休眠时间取决于 `url`最后的那个数字。
+
+这是一个很简单的爬虫，main() 函数执行时，调取 crawl_page() 函数进行网络通信，经过若干秒等待后收到结果，然后执行下一个。
+
+看起来很简单，但你仔细一算，它也占用了不少时间，五个页面分别用了 1 秒到 4 秒的时间，加起来一共用了 10 秒。这显然效率低下，该怎么优化呢？
+
+于是，一个很简单的思路出现了——我们这种爬取操作，完全可以并发化。我们就来看看使用协程怎么写。
+
+```python
+import asyncio
+import time
+
+async def crawl_page(url):
+    print('crawling {}'.format(url))
+    sleep_time = int(url.split('_')[-1])
+    await asyncio.sleep(sleep_time)
+    print('OK {}'.format(url))
+    
+async def main(urls):
+    for url in urls:
+        await crawl_page(url)
+        
+# jupyter
+t1 = time.time()
+await main(['url_1', 'url_2', 'url_3', 'url_4'])
+t2 = time.time()
+print(t2 -t1) 
+
+# Ipython
+# %time asyncio.run(main(['url_1', 'url_2', 'url_3', 'url_4']))
+
+"""
+crawling url_1
+OK url_1
+crawling url_2
+OK url_2
+crawling url_3
+OK url_3
+crawling url_4
+OK url_4
+10.015552520751953
+"""
+```
+
+### TODO
+

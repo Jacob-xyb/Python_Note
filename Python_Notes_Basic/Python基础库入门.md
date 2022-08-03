@@ -5928,7 +5928,7 @@ Wall time: 10 s
 """
 ```
 
-注意：本节的主要目的是协程的基础概念，因此我们简化爬虫的 `scrawl_page` 函数为休眠数秒，休眠时间取决于 `url`最后的那个数字。
+注意：本节的主要目的是协程的基础概念，因此我们简化爬虫的 `scrawl_page` 函数为休眠数秒，休眠时间取决于 `url` 最后的那个数字。
 
 这是一个很简单的爬虫，main() 函数执行时，调取 crawl_page() 函数进行网络通信，经过若干秒等待后收到结果，然后执行下一个。
 
@@ -5972,5 +5972,344 @@ OK url_4
 """
 ```
 
-### TODO
+代码说明：
 
+`import asyncio`，这个库包含了大部分实现协程所需的魔法工具
+
+`async` 修饰词声明异步函数，于是，这里的 `crawl_page` 和 `main` 都变成了异步函数。而调用异步函数便可得到一个协程对象`（coroutine object）`。
+
+例如：打印 `crawl_page('')` 并不会执行它，而是返回一个协程对象。
+
+```python
+print(crawl_page(''))	# <coroutine object crawl_page at 0x000001CF7E215540>
+```
+
+再来说说协程的执行。执行协程有多种方法，这里主要介绍一下常用的三种。
+
+1. **await 调用**
+
+首先可以通过 `await` 来调用。await 执行的效果，和 Python 正常执行是一样的，也就是说程序会阻塞在这里，进入被调用的协程函数，执行完毕返回后再继续，而这也是await 的字面意思。
+
+代码中 `await asyncio.sleep(sleep_time)` 会在这里休息若干秒，`await crawl_page(url)` 则会执行 crawl_page() 函数。
+
+2. **asyncio.create_task()**
+
+通过 asyncio.create_task() 来创建任务
+
+3. **asyncio.run()**
+
+`asyncio.run()` 触发运行 ( Python 3.7 之后才有的特性 )。
+
+可以让 Python 的协程接口变得非常简单，你不用去理会事件循环怎么定义和怎么使用的问题。一个非常好的编程规范是，`asyncio.run(main())` 作为主程序的入口函数，在程序运行周期内，只调用一次 asyncio.run。
+
+---
+
+这样，你就大概看懂了协程是怎么用的吧。不妨试着跑一下代码，欸，怎么还是 10 秒？
+
+10 秒就对了，还记得上面所说的，**await 是同步调用**，因此， crawl_page(url) 在当前的调用结束之前，是不会触发下一次调用的。于是，这个代码效果就和上面完全一样了，相当于我们用 **异步接口写了个同步代码**。现在又该怎么办呢？
+
+其实很简单，也正是我接下来要讲的协程中的一个重要概念，**任务（Task）**。老规矩，先看代码。
+
+```python
+import asyncio
+import time
+
+async def crawl_page(url):
+    print('crawling {}'.format(url))
+    sleep_time = int(url.split('_')[-1])
+    await asyncio.sleep(sleep_time)
+    print('OK {}'.format(url))
+    
+async def main(urls):
+    tasks = [asyncio.create_task(crawl_page(url)) for url in urls]
+    for task in tasks:
+        await task
+        
+# jupyter
+t1 = time.time()
+await main(['url_1', 'url_2', 'url_3', 'url_4'])
+t2 = time.time()
+print(t2 -t1) 
+
+# Ipython
+# %time asyncio.run(main(['url_1', 'url_2', 'url_3', 'url_4']))
+
+"""
+crawling url_1
+crawling url_2
+crawling url_3
+crawling url_4
+OK url_1
+OK url_2
+OK url_3
+OK url_4
+4.0193517208099365
+"""
+```
+
+你可以看到，我们有了协程对象后，便可以通过 `asyncio.create_task` 来创建任务。任务创建后很快就会被调度执行，这样，我们的代码也不会阻塞在任务这里。所以，我们要等所有任务都结束才行，用 `for task in tasks: await task` 即可。
+
+这次，你就看到效果了吧，结果显示，运行总时长等于运行时间最长的爬虫。
+
+当然，你也可以想一想，这里用多线程应该怎么写？而如果需要爬取的页面有上万个又该怎么办呢？再对比下协程的写法，谁更清晰自是一目了然。
+
+其实，对于执行 tasks，还有另一种做法：
+
+```python
+import asyncio
+import time
+
+async def crawl_page(url):
+    print('crawling {}'.format(url))
+    sleep_time = int(url.split('_')[-1])
+    await asyncio.sleep(sleep_time)
+    print('OK {}'.format(url))
+    
+async def main(urls):
+    tasks = [asyncio.create_task(crawl_page(url)) for url in urls]
+    await asyncio.gather(*tasks)
+        
+# jupyter
+t1 = time.time()
+await main(['url_1', 'url_2', 'url_3', 'url_4'])
+t2 = time.time()
+print(t2 -t1) 
+
+# Ipython
+# %time asyncio.run(main(['url_1', 'url_2', 'url_3', 'url_4']))
+
+"""
+crawling url_1
+crawling url_2
+crawling url_3
+crawling url_4
+OK url_1
+OK url_2
+OK url_3
+OK url_4
+4.016194105148315
+"""
+```
+
+这里的代码也很好理解。唯一要注意的是，*tasks 解包列表，将列表变成了函数的参数；与之对应的是， ** dict 将字典变成了函数的参数。
+
+另外，`asyncio.create_task`，`asyncio.run` 这些函数都是 Python 3.7 以上的版本才提供的，自然，相比于旧接口它们也更容易理解和阅读。
+
+## 解密协程运行时
+
+举例两段代码来解密协程过程：
+
+代码段1：
+
+```python
+import asyncio
+
+
+async def worker_1():
+    print('worker_1 start')
+    await asyncio.sleep(1)
+    print('worker_1 done')
+
+
+async def worker_2():
+    print('worker_2 start')
+    await asyncio.sleep(2)
+    print('worker_2 done')
+    
+async def main():
+    print('before await')
+    await worker_1()
+    print('awaited worker_1')
+    await worker_2()
+    print('awaited worker_2')
+    
+
+# jupyter
+t1 = time.time()
+await main()
+t2 = time.time()
+print(t2 -t1) 
+    
+# Ipython
+# %time asyncio.run(main())
+
+"""
+before await
+worker_1 start
+worker_1 done
+awaited worker_1
+worker_2 start
+worker_2 done
+awaited worker_2
+3.020576000213623
+"""
+```
+
+代码段2：
+
+```python
+import asyncio
+
+
+async def worker_1():
+    print('worker_1 start')
+    await asyncio.sleep(1)
+    print('worker_1 done')
+
+
+async def worker_2():
+    print('worker_2 start')
+    await asyncio.sleep(2)
+    print('worker_2 done')
+    
+async def main():
+    task1 = asyncio.create_task(worker_1())
+    task2 = asyncio.create_task(worker_2())
+    print('before await')
+    await task1
+    print('awaited worker_1')
+    await task2
+    print('awaited worker_2')
+    
+
+# jupyter
+t1 = time.time()
+await main()
+t2 = time.time()
+print(t2 -t1) 
+    
+# Ipython
+# %time asyncio.run(main())
+
+"""
+before await
+worker_1 start
+worker_2 start
+worker_1 done
+awaited worker_1
+worker_2 done
+awaited worker_2
+2.0118842124938965
+"""
+```
+
+第一个代码很好理解，等待当前函数执行完后执行下一步，不过，第二个代码，到底发生了什么呢？
+
+为了更详细了解到协程和线程的具体区别，这里将详细分析整个过程。
+
+1. asyncio.run(main())，程序进入 main() 函数，事件循环开启；
+2. task1 和 task2 任务被创建，并进入事件循环等待运行；运行到 print，输出 'before await'；
+3. **`await task1` 执行，用户选择从当前的主任务中切出，事件调度器开始调度 worker_1**；
+4. worker_1 开始运行，运行 print 输出 `worker_1 start`，然后运行到 await asyncio.sleep(1)，从当前任务切出，事件调度器开始调度 worker_2；
+
+5. worker_2 开始运行，运行 print 输出 'worker_2 start'，然后运行 await asyncio.sleep(2) 从当前任务切出；
+6. 以上所有事件的运行时间，都应该在 1ms 到 10ms 之间，甚至可能更短，事件调度器从这个时候开始暂停调度；
+7. 一秒钟后，worker_1 的 sleep 完成，事件调度器将控制权重新传给 task_1，输出 'worker_1 done'，**task_1 完成任务**，从事件循环中退出；
+8. await task1 完成，事件调度器将控制器传给主任务，输出 'awaited worker_1'，然后在 await task2 处继续等待；
+9. 两秒钟后，worker_2 的 sleep 完成，事件调度器将控制权重新传给 task_2，输出 'worker_2 done'，task_2 完成任务，从事件循环中退出；
+10. 主任务输出 'awaited worker_2'，协程全任务结束，事件循环结束。
+
+### 加深解密协程运行流程
+
+```python
+import asyncio
+
+
+async def worker_1():
+    print('worker_1 start')
+#     await asyncio.sleep(1)
+    time.sleep(1)
+    print('worker_1 done')
+
+
+async def worker_2():
+    print('worker_2 start')
+    await asyncio.sleep(2)
+    print('worker_2 done')
+
+
+async def main():
+    task1 = asyncio.create_task(worker_1())
+    task2 = asyncio.create_task(worker_2())
+    print('before await')
+    await task1
+    print('awaited worker_1')
+    await task2
+    print('awaited worker_2')
+
+
+# jupyter
+t1 = time.time()
+await main()
+t2 = time.time()
+print(t2 - t1)
+
+# Ipython
+# %time asyncio.run(main())
+
+"""
+before await
+worker_1 start
+worker_1 done
+worker_2 start
+awaited worker_1
+worker_2 done
+awaited worker_2
+3.015061378479004
+"""
+```
+
+如果只是简单的 `time.sleep(1)` 就不会在调度 worker_1 时切换到 worker_2，先执行完 `worker_1 `  后直接切换到 `worker_2` 然后 `await task1` 完成，一直运行到 `await task2` 直到 `worker_2` 执行完。
+
+```python
+import asyncio
+
+
+async def worker_1():
+    print('worker_1 start')
+    await asyncio.sleep(1)
+    print('worker_1 done')
+
+
+async def worker_2():
+    print('worker_2 start')
+    await asyncio.sleep(2)
+    print('worker_2 done')
+
+
+async def main():
+    task1 = asyncio.create_task(worker_1())
+    task2 = asyncio.create_task(worker_2())
+    print('before await')
+    await task2
+    print('awaited worker_2')
+    await task1
+    print('awaited worker_1')
+
+
+# jupyter
+t1 = time.time()
+await main()
+t2 = time.time()
+print(t2 - t1)
+
+# Ipython
+# %time asyncio.run(main())
+
+"""
+before await
+worker_1 start
+worker_2 start
+worker_1 done
+worker_2 done
+awaited worker_2
+awaited worker_1
+2.027482032775879
+"""
+```
+
+`asyncio.create_task()` 的顺序是在调用时就固定了的，与 `await` 调用的对象无关。
+
+## 限定协程任务时长
+
+## TODO P14

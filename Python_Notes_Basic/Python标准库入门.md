@@ -91,6 +91,21 @@ print(p)					# ..\Python_Note\Python_Notes_Basic\Python标准库入门
 print(os.path.dirname(p))	# ..\Python_Note\Python_Notes_Basic
 ```
 
+### 查看当前路径所在文件(夹)名
+
+`os.path.basename(path)`
+
+```python
+import os
+p = os.getcwd()
+print(p)					# ..\Python_Note\Python_Notes_Basic\Python标准库入门
+print(os.path.basename(p))	# Python标准库入门
+
+# 反斜也支持
+p = 'xxx/yyy/data.txt'
+print(os.path.basename(p))	# data.txt
+```
+
 ### 路径判断函数
 
 - `os.path.isdir(path)`

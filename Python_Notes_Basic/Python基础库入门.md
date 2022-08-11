@@ -3683,6 +3683,22 @@ printinfo(1, a=2,b=3)
 '''
 ```
 
+字典也需要双星号释放
+
+```python
+def test_sum(**kwargs):
+    print(kwargs)
+    return kwargs.get('a') + kwargs.get('b')
+
+item = {'a': 3, 'b': 4}
+print(test_sum(**item))
+
+"""
+{'a': 3, 'b': 4}
+7
+"""
+```
+
 #### 强制关键字传入
 
 声明函数时，参数中星号 ***** 可以单独出现，例如:

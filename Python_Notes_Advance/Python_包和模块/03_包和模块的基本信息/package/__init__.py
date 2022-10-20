@@ -1,0 +1,2 @@
+pkg_info = "xxx"
+

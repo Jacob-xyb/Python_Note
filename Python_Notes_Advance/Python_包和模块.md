@@ -145,7 +145,7 @@ __all__ = [‘file_a’, ‘file_b’] #package_1下有file_a.py和file_b.py
   
 - 形如 `import P`
 
-  如果导入的是一个包名，而没有模块时，代码是不会报错的，但是并不会自动导入这个包里面的任何模块。
+  **如果导入的是一个包名，而没有模块时，代码是不会报错的，但是并不会自动导入这个包里面的任何模块。**
   
   ```py
   # P 包中有 p1.py p2.py p3.py
@@ -154,6 +154,32 @@ __all__ = [‘file_a’, ‘file_b’] #package_1下有file_a.py和file_b.py
   ```
   
   但是导入任何一个包时，都会自动的去运行当前包的`__init__.py`文件，这个文件里面可以自由导入所需模块，需要使用绝对路径来导入，涉及到 `包和模块的检索路径问题`，后续再详细讲解。
+
+## from语句导入
+
+- 想要导入一个模块或包中的某个部分。`from A import B [as C]`
+
+  from语句导入只能是`from package import module`或者`from module import function`，形如`from package import module.function`或者`from package import package.module`都是不可以的；
+
+  因为 import 后面必须是最简化的内容，不允许出现 `xx.xx` 。
+
+  **例如：**
+
+  ```py
+  from P import sub_P.sp1	# SyntaxError: invalid syntax
+  ```
+
+- 特殊的`from module import *`或者`from package import *`。
+
+  对于`from module import *`，没有`__all__`变量时，在运用此方法时会导入模块中的全部对象。
+  
+  > `_`开头的除外，因为`_`开头的为私有对象，无法导入；但是 from module import _name 显式导入私有变量是可以的。
+  
+  如果只想引用时导入部分有用的变量，可以使用 `__all__ = ["name1","name2"]` 来自定义，`__all__`的位置对模块的导入没有影响，但是放在最前面是比较合理的方式。
+  
+  > 注意，`__all__`变量内记录的是字符串。
+  
+  对于`from package import *`，此时如果你的`__init__.py`内没有指定导入的模块或包时，就会什么都不导入。但是，都会将`__init__.py`执行一遍。
 
 # import 运行机制
 

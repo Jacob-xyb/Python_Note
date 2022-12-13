@@ -183,3 +183,43 @@ class WebElement:
     id			# 注意这个id是selenium使用的
 ```
 
+# Selenium 中的 Xpath
+
+XPath即XML路径语言，支持从xml或html中查找元素节点，使用XPath完全可以替代其他定位放式，如：
+
+find_element_by_xpath('//*[@id=""]')等同于find_element_by_id("")
+find_element_by_xpath('//*[@name=""]')等同于find_element_by_name("")
+find_element_by_xpath('//*[@class=""]')等同于find_element_by_class_name("")
+find_element_by_xpath('//标签名')等同于find_element_by_tag_name("标签名")
+find_element_by_xpath('//a[contains(text(),"")]')等同于find_element_by_link_text("")
+find_element_by_xpath('//*[@id=""]')等同于find_element_by_partial_link_text("")
+
+路径#
+
+/绝对路径： /html/body/div
+//相对路径： //div/form //*/form 路径中可以使用 *代表任意标签
+.当前路径： //div/form/. 等同于//div/form
+..上级路径: //div/form/.. 等同于//div
+索引#
+
+从1开始： /html/body/div[2] //div[1]/form
+属性#
+
+@属性名：定位包含特定属性名的标签, 如//input[@class]
+@属性名="属性值"：定位特定属性名=属性值的标签，如//input[@id="kw"]
+@*="属性值"：定位任意属性名=属性值的标签, 如 //input[@*='kw']
+多属性结合定位：//input[@id="kw" and @class='kw-class']或//input[@id="kw"][@class="kw-class"] (and处也支持使用or，表示或)
+函数#
+
+text()：标签中的文本值，如//a[text()="百度首页走起~"]
+contains(): 包含，如//a[contains(text(), "百度首页")]
+starts-with(): 以**开头，如//a[starts-with(text(), "百度"]
+last(): 最后一个， 如//div[last()]
+轴#
+
+parent: 父标签
+child：子标签
+following: 后面的，如：//*[text()="用户名"]/following::input[1] # 紧邻文本为用户名的输入框
+preceding：前面的
+
+salute display have whisper bird aim segment few way hamster result balcony

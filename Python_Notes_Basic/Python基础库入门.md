@@ -27,6 +27,70 @@ Python 3.0 版本，常被称为 Python 3000，或简称 Py3k。相对于 Python
 
 Python 2.7 被确定为最后一个 Python 2.x 版本，它除了支持 Python 2.x 语法外，还支持部分 Python 3.1 语法。
 
+# Python开发环境搭建
+
+## Linux
+
+以 Ubuntu 为例
+
+### apt工具安装
+
+```shell
+sudo apt-get install python3.x
+```
+
+sudo: 代表超级管理员权限
+
+### 编译python源码安装
+
+1. 获取源码包 wget
+
+   [下载源码](https://www.python.org/downloads/source/)
+
+   ```shell
+   wget -c [python官网源码地址]
+   ```
+
+   解压
+
+   ```shell
+   tar -xzvf python-3.x.x
+   ```
+
+2. 配置 configure
+
+   进入解压后的 python-3.x.x 文件夹，配置configure
+
+   ```shell
+   sudo ./configure
+   sudo ./configure --prefix='指定安装路径'
+   ```
+
+3. 编译 make
+
+   python3特有步骤，先安装编译需要的依赖包
+
+   ```shell
+   sudo apt-get install build-essential checkinstall
+   sudo apt-get install libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev
+   ```
+
+   编译
+
+   ```shell
+   make
+   ```
+
+4. 安装 make install
+
+   ```shell
+   sudo make install
+   ```
+
+## Mac
+
+官网下载 - 双击安装 - 终端测试
+
 # 基本数据类型
 
 ## 数字
@@ -35,7 +99,7 @@ Python 支持三种不同的数值类型：
 
 - **整型(int)** - 通常被称为是整型或整数，是正或负整数，不带小数点。Python3 整型是没有限制大小的，可以当作 Long 类型使用，所以 Python3 没有 Python2 的 Long 类型。布尔(bool)是整型的子类型。
 - **浮点型(float)** - 浮点型由整数部分与小数部分组成，浮点型也可以使用科学计数法表示（2.5e2 = 2.5 x 102 = 250）
-- **复数( (complex))** - 复数由实数部分和虚数部分构成，可以用a + bj,或者complex(a,b)表示， 复数的实部a和虚部b都是浮点型。
+- **复数(complex)** - 复数由实数部分和虚数部分构成，可以用a + bj,或者complex(a,b)表示， 复数的实部a和虚部b都是浮点型。
 
 我们可以使用十六进制和八进制来代表整数：
 
@@ -2029,12 +2093,12 @@ print("%c" % 97)
 - **% 操作符，格式如下：**
 
 ```
-%[(name)][flags][width].[precision]typecode
+%[(name)][flags][width][.precision]typecode
 ```
 
 -  **(name)** 为命名
--  **flags** 可以有 +，-，' '或 0。+ 表示右对齐。- 表示左对齐。' ' 为一个空格，表示在正数的左侧填充一个空格，从而与负数对齐。0 表示使用 0 填充。
--  **width** 表示显示宽度
+-  **flags** 可以有 +，-，' '或 0。+ 表示右对齐。- 表示左对齐。' ' 为一个空格，表示在正数的左侧填充一个空格，从而与负数对齐。0 表示使用 0 填充。默认空格填充。
+-  **width** 表示显示宽度。显示宽度大于最小宽度时，使用flags填充。
 -  **precision** 表示小数点后精度
 
 **示例：**

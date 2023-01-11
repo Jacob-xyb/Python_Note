@@ -244,9 +244,8 @@ Tue Jul 12 20:00:16 2022
 
 如果元组中任何一个元素越界，ValueError的错误将会被抛出。
 
-|      |                                                              |      |
-| :--- | :----------------------------------------------------------- | :--- |
 | 格式 | 含义                                                         | 备注 |
+| :--- | :----------------------------------------------------------- | :--- |
 | %a   | 本地（locale）简化星期名称                                   |      |
 | %A   | 本地完整星期名称                                             |      |
 | %b   | 本地简化月份名称                                             |      |
@@ -433,7 +432,57 @@ print(math.ceil(98.6))  # 99
 print(math.ceil(-271.1))  # -271
 ```
 
+# random
 
+## random.random()
 
+返回随机生成的一个实数，它在[0,1)范围内。
 
+```python
+import random
+
+for i in range(5):
+    print(random.random())
+```
+
+```python
+0.5405287820078251
+0.17121787001100985
+0.5918719771646924
+0.9789330771107267
+0.20310452117281652
+```
+
+## random.seed()
+
+`random.seed(a=无限制, version=2)`
+
+随机种子，固定产生的随机数 
+
+**Docstring：**
+
+The only supported seed types are None, int, float, str, bytes, and bytearray.
+
+注意：a=1 和  a='1' 的随机种子意义是不同的
+
+```python
+import random
+
+for i in range(3):
+    random.seed(1)
+    print(random.random())
+
+for i in range(3):
+    random.seed('1')
+    print(random.random())
+```
+
+```python
+0.13436424411240122
+0.13436424411240122
+0.13436424411240122
+0.4782479962566343
+0.4782479962566343
+0.4782479962566343
+```
 

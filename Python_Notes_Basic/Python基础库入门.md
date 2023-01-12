@@ -169,8 +169,20 @@ a^b = 0011 0001
 
   ```python
   # 赋值表达式可以避免调用 len() 两次:
-  if (n := len(a)) > 10:
-      print(f"List is too long ({n} elements, expected <= 10)")
+  a = [1, 2, 3, 4, 5, 6]
+  if (n := len(a)) > 5:
+      print(f"List is too long ({n} elements expected <= 5)")
+  ```
+
+- 比较运算符
+
+  需要注意的是，python可以使用链式运算符
+
+  ```python
+  num = 10
+  print(5 < num < 12)		# True
+  print(5 < num != 12)	# True
+  print(5 < num != 10)	# False
   ```
 
 - 逻辑运算符
@@ -2105,13 +2117,19 @@ print("%c" % 97)
 
 ```python
 print("%6.3f" % 2.3)	# 最小宽度为6，显示小数点后3位，因此前面有一个空格
- 2.300
+# 2.300
 print("%+10x" % 10)		# x 为表示 16 进制，显示宽度为 10，前面有 8 个空格。 
-        +a
+#        +a
 print("%-5x" % -10)		# %-5x 负号为左对齐，显示宽度为 5，故 -a 后面有 3 个空格
--a  
-print("%10.*f" % (4, 1.2))	# 我们可以利用 *，来动态代入  width, precision 两个量。比如
-  1.2000
+# -a  
+print("%10.*f" % (4, 1.2))	# 我们可以利用 *，来动态代入  width, precision 两个量。比如 
+# 1.2000
+
+# name的用法
+mathScore = 99
+englishScore = 88
+print("我的数学分数为%d,英语分数为%d" % (mathScore, englishScore))
+print("我的英语分数为%(es)d,数学分数为%(ms)d" % {"ms": mathScore, "es": englishScore})
 ```
 
 #### format 格式化函数
@@ -2304,7 +2322,7 @@ print(eval("2 * 2"))		# 4
 
 # 输入和输出
 
-## 输入输出基础
+## input()
 
 最简单直接的输入来自键盘操作，比如下面这个例子。
 
@@ -2332,14 +2350,30 @@ input() 函数暂停程序运行，同时等待键盘输入；
 
 Python 对 int 类型没有最大限制（相比之下， C++ 的 int 最大为 2147483647，超过这个数字会产生溢出），但是对 float 类型依然有精度限制。这些特点，除了在一些算法竞赛中要注意，在生产环境中也要时刻提防，避免因为对边界条件判断不清而造成 bug 甚至0day（危重安全漏洞）。
 
-- **input()**
-
 ```python
 # 输入三角形的三边长
 a,b,c = (input("请输入三角形三边的长：").split())
 a= int(a)
 b= int(b)
 c= int(c)
+```
+
+## print()
+
+- **print**(**objects*, *sep=' '*, *end='\n'*, *file=None*, *flush=False*)
+
+  All non-keyword arguments are converted to strings like [`str()`](https://docs.python.org/3/library/stdtypes.html#str) does and written to the stream, separated by *sep* and followed by *end*. Both *sep* and *end* must be strings; they can also be `None`, which means to use the default values. If no *objects* are given, [`print()`](https://docs.python.org/3/library/functions.html?highlight=print#print) will just write *end*.
+
+1. 所有的关键字都会转为字符串，并用 sep 连接
+
+2. 如果没有输入参数，将只写入 end。
+
+打印输出到文件：
+
+```python
+f = open('test.txt', 'w')
+print("xxxx", file=f)
+f.close()
 ```
 
 ## 输出格式美化

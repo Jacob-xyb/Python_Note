@@ -432,6 +432,54 @@ print(math.ceil(98.6))  # 99
 print(math.ceil(-271.1))  # -271
 ```
 
+### math.factorial() 阶乘
+
+```python
+print(math.factorial(0))  # 1
+print(math.factorial(1))  # 1
+print(math.factorial(2))  # 2
+print(math.factorial(3))  # 6
+print(math.factorial(10))  # 3628800
+```
+
+### 底数和指数运算
+
+```python
+# log() 计算自然对数（以e为底）：
+print(math.log(1.0))  # 0.0
+print(math.log(math.e))  # 1.0
+# log(a, b) 以 b 为底，a 的对数
+print(math.log(8, 2))  # 3.0
+# pow() 做的工作与上面正好相反，它用于计算一个数的指数：
+print(math.pow(2, 3))  # 8.0
+#     python 内置的指数运算符 ** 也可以进行同样的计算，
+#     只不过当底数和指数都是整数时，用 ** 计算得到的结果也是整数，不会被自动转化为浮点数
+print(2 ** 3)  # 8
+print(2.0 ** 3)  # 8.0
+```
+
+### math.sqrt() 开平方根
+
+```python
+print(math.sqrt(100.0))  # 10.0
+```
+
+### 三角函数
+
+```python
+# 常见的三角函数都可以使用，例如：sin()、 cos()、 tan()、 asin()、 acos()、 atan()、 atan2()。
+# hypot() 函数计算两直角边对应斜边长（勾股定理）
+print(math.hypot(3.0, 4.0))  # 5.0
+```
+
+### 坐标转换
+
+```python
+# 角坐标转换：
+print(math.radians(180.0))  # 3.141592653589793
+print(math.degrees(math.pi))  # 180.0
+```
+
 # random
 
 ## random.random()

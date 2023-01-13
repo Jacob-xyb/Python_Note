@@ -1,3 +1,26 @@
+# 控件基本属性
+
+在 Tkinter 中不同的控件受到各自参数的约束（即参数），所有控件既有相同属性，也有各自独有的属性。本节内容，先对这些控件的共用属性做简单介绍，如下表所示：
+
+| 属性名称        | 说明                                                         |
+| --------------- | ------------------------------------------------------------ |
+| anchor          | 定义控件或者文字信息在窗口内的位置                           |
+| background(bg)  | bg 是 background 的缩写，用来定义控件的背景颜色，参数值可以颜色的十六进制数，或者颜色英文单词 |
+| bitmap          | 定义显示在控件内的位图文件                                   |
+| borderwidth(bd) | 定于控件的边框宽度，单位是像素                               |
+| command         | 该参数用于执行事件函数，比如单击按钮时执行特定的动作，可将执行用户自定义的函数 |
+| cursor          | 当鼠标指针移动到控件上时，定义鼠标指针的类型，字符换格式，参数值有 crosshair（十字光标）watch（待加载圆圈）plus（加号）arrow（箭头）等 |
+| font            | 若控件支持设置标题文字，就可以使用此属性来定义，它是一个数组格式的参数 (字体,大小，字体样式) |
+| foreground(fg)  | fg 是 foreground 的缩写，用来定义控件的前景色，也就是字体的颜色 |
+| height          | 该参数值用来设置控件的高度，文本控件以字符的数目为高度（px），其他控件则以像素为单位 |
+| image           | 定义显示在控件内的图片文件                                   |
+| justify         | 定义多行文字的排列方式，此属性可以是 LEFT/CENTER/RIGHT       |
+| padx/pady       | 定义控件内的文字或者图片与控件边框之间的水平/垂直距离        |
+| relief          | 定义控件的边框样式，参数值为FLAT（平的）/RAISED（凸起的）/SUNKEN（凹陷的）/GROOVE（沟槽桩边缘）/RIDGE（脊状边缘） |
+| text            | 定义控件的标题文字                                           |
+| state           | 控制控件是否处于可用状态，参数值默认为 NORMAL/DISABLED，默认为 NORMAL（正常的） |
+| width           | 用于设置控件的宽度，使用方法与 height 相同                   |
+
 # Label 标签
 
 ## 属性
@@ -83,6 +106,32 @@ print(fontfamilylist)
   myfont = tkFont.Font(family='华文宋体', size=30, weight=tkFont.BOLD, slant=tkFont.ITALIC, underline=1, overstrike=1)
   LB1 = tk.Label(root, text='第二种方法', font=myfont)
   ```
+
+# Entry
+
+输入控件(Entry. 是用来输入或者显示单行字符串的控件。该控件允许用户输入或显示一行文字。 如果用户输入的文字长度大于Entry 控件的可显示范围时, 文字会向后滚动。 这种情况下所输入的字符串无法全部显示。可以通过移动光标，将不可见的文字部分移入可见区域。如果你想要输入多行文本, 就需要使用Text 控件。
+
+## 特殊属性
+
+| 属性名称                      | 说明                                                         |
+| ----------------------------- | ------------------------------------------------------------ |
+| exportselection               | 定义是否把选中的文本，自动拷贝到剪贴板。这个参数对输入控件不起作用 |
+| selectbackground              | 选中文字时的背景颜色                                         |
+| selectforeground              | 选中文字时的前景色                                           |
+| selectborderwidth             | 选中区域的边框宽度                                           |
+| show                          | 指定文本框内容以何种样式的字符显示，比如密码可以将值设为 show="*" |
+| textvariable                  | 输入框内值，也称动态字符串，使用 **StringVar()** 对象来设置，而 text 为静态字符串对象 |
+| xscrollcommand                | 设置输入框内容滚动条，当输入的内容大于输入框的宽度时使用户   |
+| disabledbackground            | 定义输入控件被禁止使用时的背景颜色。                         |
+| disabledforeground            | 定义输入控件被禁止时的前景（文本）颜色。                     |
+| highlightbackground           | 定义输入控件没有获得输入焦点状态下的高亮背景颜色。就是输入框的亮边。 |
+| highlightcolor                | 与highlightbackground属性类似。不过是输入控件获得输入焦点时的边框颜色。 |
+| highlightthickness            | 定义边框的宽度                                               |
+| insertbackground              | 输入控件中，插入光标的颜色                                   |
+| insertwidth                   | 插入光标的宽度。                                             |
+| insertborderwidth             | 插入光标的边框显示宽度。0是没有边框，1到其他正整数是只有一个像素的边框，如果是一个非0的数值，光标会使用RAISED效果的边框。 |
+| insertofftime 、 insertontime | 这两个属性控制插入光标闪烁效果。就是插入光标的出现和消失的时间。单位是毫秒。 |
+| invalidcommand / invcmd       | 验证输入合法性的回调函数，但不能独立使用。只有设置了validatecommand回调函数且该函数返回False的情况下，才会激活invalidcommand定义的回调函数。 |
 
 # Treeview
 

@@ -50,5 +50,6 @@ window.state("normal")
 # 14.最小化窗口
 window.iconify()
 
+
 # 进入主循环，显示主窗口
 window.mainloop()

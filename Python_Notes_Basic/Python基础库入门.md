@@ -2828,6 +2828,14 @@ if i != 0:
 ...
 ```
 
+### 三目运算符
+
+```python
+judge = 1
+"aa" if judge else "bb"
+# 'aa'
+```
+
 ## 循环语句
 
 **同样需要注意冒号和缩进。另外，在 Python 中没有 do..while 循环。**

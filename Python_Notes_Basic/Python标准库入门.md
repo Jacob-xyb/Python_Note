@@ -1,3 +1,93 @@
+# math
+
+## 数学常数
+
+```python
+import math
+
+# 自然底数
+print(math.e)  # 2.718281828459045
+# 圆周率 π
+print(math.pi)  # 3.141592653589793
+```
+
+## 数学运算
+
+### 取绝对值
+
+```python
+import math
+
+# math.fabs() 用于获得绝对值：
+print(math.fabs(98.6))  # 98.6
+print(math.fabs(-271.1))  # 271.1
+
+# abs() 更为方便
+print(abs(-271.1))  # 271.1
+```
+
+### 取整
+
+```python
+import math
+
+# math.floor() 向下取整， 
+print(math.floor(98.6))  # 98
+print(math.floor(-271.1))  # -272
+
+# math.ceil() 向上取整
+print(math.ceil(98.6))  # 99
+print(math.ceil(-271.1))  # -271
+```
+
+### math.factorial() 阶乘
+
+```python
+print(math.factorial(0))  # 1
+print(math.factorial(1))  # 1
+print(math.factorial(2))  # 2
+print(math.factorial(3))  # 6
+print(math.factorial(10))  # 3628800
+```
+
+### 底数和指数运算
+
+```python
+# log() 计算自然对数（以e为底）：
+print(math.log(1.0))  # 0.0
+print(math.log(math.e))  # 1.0
+# log(a, b) 以 b 为底，a 的对数
+print(math.log(8, 2))  # 3.0
+# pow() 做的工作与上面正好相反，它用于计算一个数的指数：
+print(math.pow(2, 3))  # 8.0
+#     python 内置的指数运算符 ** 也可以进行同样的计算，
+#     只不过当底数和指数都是整数时，用 ** 计算得到的结果也是整数，不会被自动转化为浮点数
+print(2 ** 3)  # 8
+print(2.0 ** 3)  # 8.0
+```
+
+### math.sqrt() 开平方根
+
+```python
+print(math.sqrt(100.0))  # 10.0
+```
+
+### 三角函数
+
+```python
+# 常见的三角函数都可以使用，例如：sin()、 cos()、 tan()、 asin()、 acos()、 atan()、 atan2()。
+# hypot() 函数计算两直角边对应斜边长（勾股定理）
+print(math.hypot(3.0, 4.0))  # 5.0
+```
+
+### 坐标转换
+
+```python
+# 角坐标转换：
+print(math.radians(180.0))  # 3.141592653589793
+print(math.degrees(math.pi))  # 180.0
+```
+
 # os
 
 其实该语句就是在python环境下对文件，文件夹执行操作的一个模块
@@ -122,6 +212,157 @@ print(os.path.basename(p))	# data.txt
   # ['.ipynb_checkpoints', '1.os.ipynb', '2.sys.ipynb', '3.time.ipynb']
   # .ipynb_checkpoints
   ```
+
+# random
+
+## random.random()
+
+返回随机生成的一个实数，它在`[0, 1)`范围内。
+
+```python
+import random
+
+for i in range(5):
+    print(random.random())
+```
+
+```python
+0.5405287820078251
+0.17121787001100985
+0.5918719771646924
+0.9789330771107267
+0.20310452117281652
+```
+
+## random.randint(a, b)
+
+返回随机生成的一个整数，它在`[a, b]`范围内。
+
+```python
+import random
+for i in range(5):
+    print(random.randint(1, 10))
+```
+
+## random.seed()
+
+`random.seed(a=无限制, version=2)`
+
+随机种子，固定产生的随机数 
+
+**Docstring：**
+
+The only supported seed types are None, int, float, str, bytes, and bytearray.
+
+注意：a=1 和  a='1' 的随机种子意义是不同的
+
+```python
+import random
+
+for i in range(3):
+    random.seed(1)
+    print(random.random())
+
+for i in range(3):
+    random.seed('1')
+    print(random.random())
+```
+
+```python
+0.13436424411240122
+0.13436424411240122
+0.13436424411240122
+0.4782479962566343
+0.4782479962566343
+0.4782479962566343
+```
+
+## random.uniform(a, b)
+
+返回随机生成的一个实数，它在`[a, b]`范围内。
+
+```python
+for i in range(5):
+    print(random.uniform(1.1, 5.4))  
+```
+
+## random.randrange(a, b=None, step=1)
+
+- random.randrange(a, b, step)
+
+  返回随机生成的一个整数，它在`[a, b)`范围内, 间隔为 step。
+
+  ```python
+  for i in range(5):
+    print(random.randrange(1, 100, 2)) 
+  ```
+  
+- random.randrange(a)
+
+  返回随机生成的一个整数，它在`[0, a)`范围内。
+
+  ```python
+  for i in range(5):
+      print(random.randrange(20)) 
+  ```
+
+## random.choice(seq)
+
+返回非空序列seq中的随机元素
+
+```python
+print(random.choice('tomorrow'))
+print(random.choice('tomorrow'))
+```
+
+## random.sample(*population*, *k*, *, counts=None)
+
+用于无替换的随机抽样。
+
+- 常规用法
+
+  ```python
+  print(random.sample('zyxwvutsrqponmlkjihgfedcba',5))
+  
+  # ['n', 'q', 't', 'g', 'i']
+  ```
+
+- counts 参数使用方法
+
+  ```python
+  print(random.sample(['red', 'green', 'blue'], 5, counts=[3, 1, 3]))
+  print(random.sample(['red', 'green', 'blue'], 5, counts=[3, 1, 3]))
+  
+  # ['green', 'blue', 'red', 'red', 'red']
+  # ['blue', 'red', 'blue', 'red', 'blue']
+  ```
+
+*Changed in version 3.9:* Added the *counts* parameter.
+
+*Changed in version 3.11:* The *population* must be a sequence. Automatic conversion of sets to lists is no longer supported.
+
+## random.shuffle(x)
+
+随机打乱自身序列，如果想不改变原序列，请使用 random.sample() 生成新的副本。
+
+```python
+sample = list(range(10))
+random.shuffle(sample)
+print(sample)
+# [6, 0, 3, 7, 5, 2, 8, 9, 1, 4]
+```
+
+## 应用
+
+### 生成随机字符串
+
+```python
+# 从a-zA-Z0-9生成指定数量的随机字符：
+import string
+import random
+ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
+print(ran_str)  # TrgJicEe
+```
 
 
 # sys
@@ -388,149 +629,5 @@ print (time.process_time_ns() - t0, "seconds process time")
 2508415400 seconds perfer time
 0 seconds process time
 """
-```
-
-# math
-
-## 数学常数
-
-```python
-import math
-
-# 自然底数
-print(math.e)  # 2.718281828459045
-# 圆周率 π
-print(math.pi)  # 3.141592653589793
-```
-
-## 数学运算
-
-### 取绝对值
-
-```python
-import math
-
-# math.fabs() 用于获得绝对值：
-print(math.fabs(98.6))  # 98.6
-print(math.fabs(-271.1))  # 271.1
-
-# abs() 更为方便
-print(abs(-271.1))  # 271.1
-```
-
-### 取整
-
-```python
-import math
-
-# math.floor() 向下取整， 
-print(math.floor(98.6))  # 98
-print(math.floor(-271.1))  # -272
-
-# math.ceil() 向上取整
-print(math.ceil(98.6))  # 99
-print(math.ceil(-271.1))  # -271
-```
-
-### math.factorial() 阶乘
-
-```python
-print(math.factorial(0))  # 1
-print(math.factorial(1))  # 1
-print(math.factorial(2))  # 2
-print(math.factorial(3))  # 6
-print(math.factorial(10))  # 3628800
-```
-
-### 底数和指数运算
-
-```python
-# log() 计算自然对数（以e为底）：
-print(math.log(1.0))  # 0.0
-print(math.log(math.e))  # 1.0
-# log(a, b) 以 b 为底，a 的对数
-print(math.log(8, 2))  # 3.0
-# pow() 做的工作与上面正好相反，它用于计算一个数的指数：
-print(math.pow(2, 3))  # 8.0
-#     python 内置的指数运算符 ** 也可以进行同样的计算，
-#     只不过当底数和指数都是整数时，用 ** 计算得到的结果也是整数，不会被自动转化为浮点数
-print(2 ** 3)  # 8
-print(2.0 ** 3)  # 8.0
-```
-
-### math.sqrt() 开平方根
-
-```python
-print(math.sqrt(100.0))  # 10.0
-```
-
-### 三角函数
-
-```python
-# 常见的三角函数都可以使用，例如：sin()、 cos()、 tan()、 asin()、 acos()、 atan()、 atan2()。
-# hypot() 函数计算两直角边对应斜边长（勾股定理）
-print(math.hypot(3.0, 4.0))  # 5.0
-```
-
-### 坐标转换
-
-```python
-# 角坐标转换：
-print(math.radians(180.0))  # 3.141592653589793
-print(math.degrees(math.pi))  # 180.0
-```
-
-# random
-
-## random.random()
-
-返回随机生成的一个实数，它在[0,1)范围内。
-
-```python
-import random
-
-for i in range(5):
-    print(random.random())
-```
-
-```python
-0.5405287820078251
-0.17121787001100985
-0.5918719771646924
-0.9789330771107267
-0.20310452117281652
-```
-
-## random.seed()
-
-`random.seed(a=无限制, version=2)`
-
-随机种子，固定产生的随机数 
-
-**Docstring：**
-
-The only supported seed types are None, int, float, str, bytes, and bytearray.
-
-注意：a=1 和  a='1' 的随机种子意义是不同的
-
-```python
-import random
-
-for i in range(3):
-    random.seed(1)
-    print(random.random())
-
-for i in range(3):
-    random.seed('1')
-    print(random.random())
-```
-
-```python
-0.13436424411240122
-0.13436424411240122
-0.13436424411240122
-0.4782479962566343
-0.4782479962566343
-0.4782479962566343
 ```
 

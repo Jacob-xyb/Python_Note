@@ -115,6 +115,18 @@ Python 支持三种不同的数值类型：
 
 - Python支持复数，复数由实数部分和虚数部分构成，可以用a + bj,或者complex(a,b)表示， 复数的实部a和虚部b都是浮点型。
 
+### 整数
+
+#### 进制数
+
+```python
+# 进制数代表整数
+print(0b10)  # 0b 2进制
+print(0o10)  # 0o 8进制
+print(0x10)  # 0x 16进制
+print(10)    #    10进制
+```
+
 ### 数字类型转换
 
 有时候，我们需要对数据内置的类型进行转换，数据类型的转换，你只需要将数据类型作为函数名即可。
@@ -2940,7 +2952,7 @@ for item in iterable:
         expression2
 ```
 
-而如果没有 else 语句，则需要写成：
+**而如果没有 else 语句，则需要写成：**
 
 ```
 expression for item in iterable if condition

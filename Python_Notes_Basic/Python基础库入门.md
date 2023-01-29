@@ -127,6 +127,17 @@ print(0x10)  # 0x 16进制
 print(10)    #    10进制
 ```
 
+```python
+# 其他进制数的转换
+def toStr(num, base):
+    convertString = "0123456789ABCDEF"  # 最大转换为16进制
+    if num < base:
+        return convertString[num]
+    else:
+        return toStr(num // base, base) + convertString[num % base]
+toStr(14, 7)  # 20
+```
+
 ### 数字类型转换
 
 有时候，我们需要对数据内置的类型进行转换，数据类型的转换，你只需要将数据类型作为函数名即可。
@@ -931,7 +942,29 @@ print(l1)		# [2, 3, 1, 4]
 print(l2)		# ['a', 'b', 'c', 'd']
 ```
 
+#### 列表生成式
 
+```python
+nums = range(100)
+print(nums)  # python3 不会马上生成列表 
+# nums[0] = 9  # 'range' object does not support item assignment
+```
+
+####  列表推导式
+
+```python
+# 映射解析 
+nums = range(10)
+res = [num ** 2 for num in nums]
+print(res)  # [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+```
+
+```python
+# 过滤
+nums = range(10)
+res =  [num for num in nums if num % 2 == 0]
+print(res)  # [0, 2, 4, 6, 8]
+```
 
 ### Tuple 函数一览
 
@@ -1692,6 +1725,13 @@ find() 方法检测字符串中是否包含子字符串 str ，如果指定 beg�
 rfind() 返回字符串最后一次出现的位置，如果没有匹配项则返回-1。
 
 语法：`str.rfind(str, beg=0 end=len(string))`
+
+```python
+s = 'Hello World!'
+print(s.find('o'))  # 4
+print(s.find('o', 2)) # 4
+print(s.find('o', 5)) # 7
+```
 
 #### str.index() & str.rindex()
 

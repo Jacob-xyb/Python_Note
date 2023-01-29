@@ -1864,15 +1864,27 @@ upper() 方法将字符串中的小写字母转为大写字母。
 
 #### str.lstrip() & str.rstrip()
 
-lstrip() 方法用于截掉字符串左边的空格或指定字符。
+lstrip() 方法用于截掉字符串左边的空白字符或指定字符。
 
-注意：从左到右移除字符串的指定字符，无字符集参数或为 None 时移除空格，str 时移除所有属于字符集子串的字符一旦不属于则停止移除并返回字符串副本。
+注意：从左到右移除字符串的指定字符，无字符集参数或为 None 时移除空白字符，str 时移除所有属于字符集子串的字符一旦不属于则停止移除并返回字符串副本。
 
 ```python
 'www.example.com'.lstrip('cmowz.')		# 'example.com'
 ```
 
 rstrip() 方法方向从右到左。
+
+```python
+name = "  \nhello world"
+print(name.lstrip())  # 不指定字符集时，会默认移除 \n
+print(name.lstrip('eh'))
+
+"""
+hello world
+  
+hello world
+"""
+```
 
 #### str.maketrans()
 
@@ -1957,6 +1969,18 @@ s1 = 'Jacob'
 print(s1.split('Jacob'))	# ['', '']
 ```
 
+```python
+info = "jx-18-180"
+print(info.split("-", 3))  # max-split > 可分割次数时不生效
+info = "jx-18-180-027-12345678"
+print(info.split("-", 3))
+
+"""
+['jx', '18', '180']
+['jx', '18', '180', '027-12345678']
+"""
+```
+
 #### str.splitlines()
 
 Python splitlines() 按照行('\r', '\r\n', \n')分隔，返回一个包含各行作为元素的列表，如果参数 keepends 为 False，不包含换行符，如果为 True，则保留换行符。
@@ -2036,6 +2060,24 @@ zfill() 方法返回指定长度的字符串，原字符串右对齐，前面填
 str = "this is string example from runoob....wow!!!"
 print ("str.zfill : ",str.zfill(40))	# this is string example from runoob....wow!!!
 print ("str.zfill : ",str.zfill(50))	# 000000this is string example from runoob....wow!!!
+```
+
+#### str.partition() & str.rpartition()
+
+根据指定的分隔符，返回（分隔符左侧内容，分隔符，分隔符右侧内容）
+
+语法: `str.partition(sep)`
+
+返回:
+
+- 如果查找到分隔符： tuple(分隔符左侧内容, 分隔符, 分隔符右侧内容)
+
+- 如果没查找到分隔符: tuple(原字符串, "", "")
+
+```python
+info = "jx-18-180-027-12345678"
+print(info.partition("-"))  # ('jx', '-', '18-180-027-12345678')
+print(info.rpartition("-"))  # ('jx-18-180-027', '-', '12345678')
 ```
 
 ### 转义字符

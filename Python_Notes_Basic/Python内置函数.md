@@ -105,4 +105,38 @@ print(round(num, 3))  # 1.534
       return (int(pow(10, ndigits) * num - 0.5)+1) / pow(10, ndigits)
   ```
 
-  
+
+# sorted()
+
+对可迭代对象进行排序
+
+语法: `sorted(iterable,  key=None, reverse=False)`
+
+- key: 排序关键字，值为一个函数，此函数只有一个参数且返回一个值
+
+返回：排序后的列表
+
+## sorted(iterable)
+
+```python
+sorted("fgbofaof")
+# ['a', 'b', 'f', 'f', 'f', 'g', 'o', 'o']
+
+names = [('jx1', 18), ('jx2', 30), ('jx3', 20), ('jx4', 15)]
+sorted(names)  # 默认是元组的第一个元素进行排序
+# [('jx1', 18), ('jx2', 30), ('jx3', 20), ('jx4', 15)]
+```
+
+## sorted(iterable, key=None)
+
+```python
+def getKey(x):
+    return x[1]
+
+names = [('jx1', 18), ('jx2', 30), ('jx3', 20), ('jx4', 15)]
+sorted(names, key=getKey) 
+# [('jx4', 15), ('jx1', 18), ('jx3', 20), ('jx2', 30)]
+```
+
+
+

@@ -966,6 +966,32 @@ res =  [num for num in nums if num % 2 == 0]
 print(res)  # [0, 2, 4, 6, 8]
 ```
 
+####  列表枚举对象
+
+```python
+values = ['a', 'b', 'c', 'd']
+print(list(enumerate(values)))  # [(0, 'a'), (1, 'b'), (2, 'c'), (3, 'd')]
+```
+
+#### 可迭代对象
+
+```python
+import collections.abc
+nums = '12345'
+isinstance(nums, collections.abc.Iterable)  # True
+```
+
+Python从3.3版本开始就弃用了`colections.<smth>`，转而支持`collections.abc.<smth>`。从3.10开始，这种不推荐使用的行为被完全删除，并引发错误。
+
+#### 可迭代对象的比较
+
+```python
+l1 = [1, 2, 3]
+l2 = [1, 2]
+
+l1 > l2  # True
+```
+
 ### Tuple 函数一览
 
 元组的函数 几乎被 列表给覆盖，唯一区别就是使元组发生改变的函数元组没有。

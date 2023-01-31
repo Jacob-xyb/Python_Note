@@ -1074,6 +1074,10 @@ d = dict(zip(l1, l2))	#  {'1': 'a', '2': 'b', '3': 'c'}
 s1 = {1, 2, 3}
 s2 = set([1, 2, 3])
 s1 == s2							# True
+
+# 不可变集合
+s = frozenset("abc")
+print(s)  # frozenset({'b', 'a', 'c'})
 ```
 
 #### 判断是否存在
@@ -1423,7 +1427,18 @@ print('site = ', site)
 
 ### Dict 技巧和应用
 
-1. **字典推导式**
+#### dict.fromkeys()
+
+语法：`dict.fromkeys(seq. values=None)`
+
+将序列中的每个值，转化为dict的key
+
+```python
+print(dict.fromkeys("abc"))  # {'a': None, 'b': None, 'c': None}
+print(dict.fromkeys("abc", 1))  # {'a': 1, 'b': 1, 'c': 1}
+```
+
+#### 字典推导式
 
 ```python
 d = {k: k for k in range(3)}
@@ -1435,6 +1450,14 @@ print(d)  # {0: 0, 1: 1, 2: 2}
 #### len(set)
 
 返回集合长度
+
+#### intersection() & intersection_update()
+
+交集。
+
+#### union() & update()
+
+并集。
 
 #### set.difference()、set.difference_update()
 
@@ -1452,16 +1475,28 @@ print(z)		# {'cherry', 'banana'}
 print(x - y)	# {'cherry', 'banana'}
 ```
 
+#### set.isdisjoint()
+
+判定两个集合是否不相交
+
+#### set.issuperset()
+
+判断一个集合是否包含另一个集合
+
+#### set.issubset()
+
+判定一个集合是否包含于另一个集合
+
 ### Set 技巧和应用
 
-1. **集合推导式**
+#### 集合推导式
 
 ```python
 s1 = {x for x in 'abracadabra' if x not in 'abc'}
 s1	# {'d', 'r'}
 ```
 
-2. **集合运算**
+#### 集合运算
 
 ```python
 a = set('abracadabra')
@@ -1475,7 +1510,7 @@ print(a - b)	# {'b', 'd', 'r'}
 # a 或 b 有
 print(a | b)	# {'l', 'm', 'b', 'c', 'z', 'd', 'a', 'r'}
 # a 和 b 都有
-print(a & b)	# {'c', 'a'}
+print(a &  b)	# {'c', 'a'}
 # a b 不同时有
 print(a ^ b)	# {'b', 'm', 'z', 'l', 'd', 'r'}
 ```

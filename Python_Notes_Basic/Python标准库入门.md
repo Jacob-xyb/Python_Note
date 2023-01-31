@@ -1,3 +1,68 @@
+# calendar
+
+## 输出文本日历
+
+```python
+import calendar
+print(calendar.month(2022, 11))
+
+"""
+   November 2022
+Mo Tu We Th Fr Sa Su
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30
+"""
+```
+
+# datetime
+
+Python处理日期和时间的标准库
+
+## 获取时间
+
+### 获取当天日期
+
+```python
+import datetime
+print(datetime.datetime.now())  # 2023-01-31 16:29:15.576684
+print(datetime.datetime.today())  # 2023-01-31 16:29:15.576684
+```
+
+### 单独获取年月日
+
+```python
+import datetime
+t = datetime.datetime.now()  # t 为 datetime.datetime 对象
+print(t)  # 2023-01-31 16:35:12.599288
+print(t.year, t.month, t.day, t.hour, t.minute, t.second)  # 2023 1 31 16 35 12
+```
+
+## 计算时间
+
+### 计算几天后的时间
+
+```python
+import datetime
+t1 = datetime.datetime.now()
+t2 = t1 + datetime.timedelta(days=7)
+print(t1)  # 2023-01-31 17:08:55.330287
+print(t2)  # 2023-02-07 17:08:55.330287
+```
+
+### 计算时间差
+
+```python
+import datetime
+t1 = datetime.datetime(2023, 2, 1, 17)
+t2 = datetime.datetime(2023, 2, 7, 17)
+delta = t2 - t1
+print(delta, type(delta))  # 6 days, 0:00:00 <class 'datetime.timedelta'>
+print(delta.total_seconds())  # 518400.0
+```
+
 # math
 
 ## 数学常数
@@ -369,6 +434,8 @@ print(ran_str)  # TrgJicEe
 
 # time
 
+提供了处理时间和表示之间转换的功能
+
 ## 获取时间
 
 ### 时间戳(timestamp)
@@ -398,7 +465,7 @@ b = time.perf_counter()
 print(b-a)  # 3.0083799999999883
 ```
 
-### struct_time
+### struct_time 时间元组
 
 struct_time元组共有9个元素，返回struct_time的函数主要有 `gmtime()` ，`localtime()` 
 
@@ -440,6 +507,12 @@ print(struct_time.tm_hour)  # 20
 `time.localtime([secs])`：将一个时间戳转换为当前时区的struct_time。secs参数未提供，则以当前时间为准。
 
 ```python
+import time 
+print(time.localtime(0))
+# time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=8, tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
+```
+
+```python
 import time
 
 print(time.localtime())
@@ -452,14 +525,6 @@ time.struct_time(tm_year=2022, tm_mon=7, tm_mday=12, tm_hour=19, tm_min=46, tm_s
 #### gmtime()
 
 `time.gmtime([secs])`：和localtime()方法类似，gmtime()方法是将一个时间戳转换为UTC时区（0时区）的struct_time。
-
-#### mktime()
-
-`time.mktime(t)`：将一个struct_time转化为时间戳。
-
-```python
-time.mktime(time.localtime())  # 1657626741.0
-```
 
 #### asctime()
 
@@ -534,6 +599,14 @@ print(time.strftime("%Y-%m-%d %H:%M:%S"))
 print(time.strptime("2022-07-12 20:09:30", "%Y-%m-%d %X"))
 
 # time.struct_time(tm_year=2022, tm_mon=7, tm_mday=12, tm_hour=20, tm_min=9, tm_sec=30, tm_wday=1, tm_yday=193, tm_isdst=-1)
+```
+
+#### mktime()
+
+`time.mktime(t)`：将一个struct_time转化为时间戳。
+
+```python
+time.mktime(time.localtime())  # 1657626741.0
 ```
 
 ## 计算时间间隔

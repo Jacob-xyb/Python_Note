@@ -64,6 +64,20 @@ dict2 = {'a': 100, 'c': 200}
 print(eval("a + b + c", dict1, dict2))  # 303
 ```
 
+# range()
+
+语法: `range([start,] stop [, step=1])`
+
+- 生成一个从[start,stop)的数字序列
+
+```python
+# 这里不用写关键字 step=2,会报错的！ 直接range(start,stop,step)就OK
+print(list(range(0,9,2)))  # [0, 2, 4, 6, 8]
+
+# 步长可以为负
+print(list(range(9,0,-1)))  # [9, 8, 7, 6, 5, 4, 3, 2, 1]
+```
+
 # round()
 
 round() 函数用对一个数进行四舍五入，并返回表达式的值。

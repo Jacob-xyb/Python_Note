@@ -429,6 +429,24 @@ ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
 print(ran_str)  # TrgJicEe
 ```
 
+# string
+
+```python
+import string
+print(string.ascii_letters)
+# abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+print(string.ascii_lowercase)
+# abcdefghijklmnopqrstuvwxyz
+print(string.ascii_uppercase)
+# ABCDEFGHIJKLMNOPQRSTUVWXYZ
+print(string.digits)
+# 0123456789
+print(string.hexdigits)
+# 0123456789abcdefABCDEF
+print(string.octdigits)
+# 01234567
+```
+
 
 # sys
 

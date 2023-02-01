@@ -3888,14 +3888,15 @@ def functionname([formal_args,] *var_args_tuple ):
 
 ```python
 # 可写函数说明
-def printinfo( arg1, *vartuple ):
-   "打印任何传入的参数"
-   print ("输出: ")
-   print (arg1)
-   print (vartuple)
- 
+def printinfo(arg1, *vartuple):
+    "打印任何传入的参数"
+    print("输出: ")
+    print(arg1)
+    print(vartuple)
+
+
 # 调用printinfo 函数
-printinfo( 70, 60, 50 )
+printinfo(70, 60, 50)
 
 '''
 输出: 
@@ -4017,6 +4018,18 @@ f(10, 20, 30, d=40, e=50, f=60)
 f(10, b=20, c=30, d=40, e=50, f=60)   # b 不能使用关键字参数的形式
 f(10, 20, 30, 40, 50, f=60)           # e 必须使用关键字参数的形式
 ```
+
+## 函数的使用描述
+
+1. 函数的功能
+2. 函数的参数
+   - 含义
+   - 类型
+   - 是否可以省略
+   - 默认值
+3. 函数的返回值
+   - 含义
+   - 类型
 
 ## 函数变量作用域
 
@@ -4158,6 +4171,110 @@ res3 = square(base3)
 其次，和上面讲到的嵌套函数优点类似，函数开头需要做一些额外工作，而你又需要多次调用这个函数时，将那些额外工作的代码放在外部函数，就可以减少多次调用导致的不必要的开销，提高程序的运行效率。
 
 另外还有一点，后面再讲，闭包常常和装饰器（decorator）一起使用。
+
+### 注意事项
+
+1. 闭包中，如果要修改引用的外层变量，需要使用 `nonlocal` 声明变量，否则当作是闭包内新定义的变量
+
+   ```python
+   def test():
+       num = 10
+       def res():
+           num = 66
+           print(num)
+       print(num)
+       res()
+       print(num)
+       return res
+   
+   res = test()
+   # 10 66 10
+   ```
+
+   ```python
+   def test():
+       num = 10
+       def res():
+           nonlocal num
+           num = 66
+           print(num)
+       print(num)
+       res()
+       print(num)
+       return res
+   
+   res = test()
+   # 10 66 66
+   ```
+
+2. 闭包内的参数确定的时机
+
+   当函数被调用的时候，才会真正确定对应的值。
+
+   ```python
+   def test():
+       num = 1
+       def test2():
+           print(num)
+       num = 10
+       return test2
+     
+   res = test()()  # 10
+   ```
+
+## 偏函数
+
+写一个参数比较多的函数时，如果有些参数，大部分场景下都是某一个固定值，那么为了简化使用，就可以创建一个新函数，指定要使用的函数的参数为固定值，这个 函数就是`偏函数`。
+
+- 手动实现偏函数
+
+  ```python
+  def test(a, b, c, d):
+      print(a+b+c,d)
+  
+  # test2 即为 test 的偏函数
+  def test2(a, b, c, d=1):
+      test(a, b, c, d)
+  ```
+
+- functools 实现偏函数
+
+  自带的偏函数有个问题，不能在偏函数中再次输入偏参数的值
+
+  ```python
+  def test(a, b, c, d):
+      print(a+b+c,d)
+  
+  import functools
+  
+  newFunc = functools.partial(test, d=1)
+  print(newFunc, type(newFunc))  # functools.partial(<function test at 0x000001AD5074AF20>, d=1) <class 'functools.partial'>
+  newFunc(1, 2, 3)
+  # newFunc(1, 2, 3, 4)  # TypeError: test() got multiple values for argument 'd'
+  ```
+
+## 高阶函数
+
+当一个函数的参数，接收的是另一个函数时，则称这个函数是`高阶函数`
+
+sorted() 就是一个典型的高阶函数
+
+```python
+l = [{"name": "jx1", 'age': 18}, {"name": "jx2", 'age': 18.5}, {"name": "jx3", 'age': 19}]
+def getKey(x):
+    return x['age']
+
+sorted(l, key=getKey)
+"""
+[{'name': 'jx1', 'age': 18},
+ {'name': 'jx2', 'age': 18.5},
+ {'name': 'jx3', 'age': 19}]
+"""
+```
+
+## 返回函数
+
+以函数作为返回值。
 
 ## 总结
 
@@ -5288,7 +5405,179 @@ print(sys.path)
 
 装饰器一直以来都是 Python 中很有用、很经典的一个feature，在工程中的应用也十分广泛，比如日志、缓存等等的任务都会用到。然而，在平常工作生活中，许多人常常因为其相对复杂的表示，对装饰器望而生畏，认为它“too fancy to learn”，实际并不如此。
 
-  ## 函数装饰器
+装饰器的主要作用是在函数名以及函数体不改变的前提下，给一个函数附加一些额外代码。
+
+## 装饰器的简单示例
+
+**模拟一段业务流程代码**
+
+```python
+# 定义两个功能函数
+def fss():
+    print("发说说")
+
+def ftp():
+    print("发图片")
+    
+# 相关逻辑代码
+btnIndex = 2
+if btnIndex == 1:
+    fss()
+else:
+    ftp()
+```
+
+**如果操作前提需要有登陆验证的操作**
+
+1. 直接在业务逻辑代码里面添加验证操作
+
+   ```python
+   # 相关逻辑代码
+   btnIndex = 2
+   if btnIndex == 1:
+       print("登陆验证...")
+       fss()
+   else:
+       print("登陆验证...")
+       ftp()
+   
+   # 由于业务逻辑代码非常多，所以每次调用功能函数之前，都需要做一次验证，所以代码冗余度比较大，且不好维护
+   ```
+
+2. 直接在功能函数里面修改
+
+   ```python
+   # 定义两个功能函数
+   def checkLogin():
+       print("登陆验证...")
+   
+   def fss():
+       checkLogin()
+       print("发说说")
+   
+   def ftp():
+       checkLogin()
+       print("发图片")
+       
+   # 相关逻辑代码
+   btnIndex = 2
+   if btnIndex == 1:
+       fss()
+   else:
+       ftp()
+       
+   # 这样实现不适用于面向对象的思想，也没有遵循函数功能单一原则。
+   ```
+
+3. 将函数作为参数传递进来
+
+   ```python
+   # 定义两个功能函数
+   def checkLogin(func):
+       print("登陆验证...")
+       func()
+   
+   def fss():
+       print("发说说")
+   
+   def ftp():
+       print("发图片")
+       
+   # 相关逻辑代码
+   btnIndex = 2
+   if btnIndex == 1:
+       # fss()
+       checkLogin(fss)
+   else:
+       # ftp()
+       checkLogin(fss)
+       
+   # 这样写的问题在于，业务逻辑代码还是发生了改变，需要更改所有业务逻辑代码
+   ```
+
+4. 采用闭包来不更改原功能函数，其实这已经实现了装饰器
+
+   ```python
+   # 如果不采用闭包，对象赋值时，会直接调用函数，如下：
+   """
+   def checkLogin(func):
+       print("登陆验证...")
+       func()
+   
+   def fss():
+       print("发说说")
+   fss = checkLogin(fss)
+   """
+   
+   # 定义两个功能函数
+   def checkLogin(func):
+       def inner():
+           print("登陆验证...")
+           func()
+       return inner
+   
+   def fss():
+       print("发说说")
+   fss = checkLogin(fss)
+       
+   def ftp():
+       print("发图片")
+   ftp = checkLogin(ftp)
+       
+   # 相关逻辑代码
+   btnIndex = 2
+   if btnIndex == 1:
+       fss()
+   else:
+       ftp()
+   ```
+
+5. python 语法糖实现装饰器
+
+   ```python
+   # 定义两个功能函数
+   def checkLogin(func):
+       def inner():
+           print("登陆验证...")
+           func()
+       return inner
+   
+   @checkLogin
+   def fss():
+       print("发说说")
+   
+   @checkLogin
+   def ftp():
+       print("发图片")
+       
+   # 相关逻辑代码
+   btnIndex = 2
+   if btnIndex == 1:
+       fss()
+   else:
+       ftp()
+   ```
+
+## 装饰器执行时间
+
+装饰器是立即执行
+
+```python
+def checkLogin(func):
+    print("是否执行")
+    def inner():
+        print("登陆验证...")
+        func()
+    return inner
+
+@checkLogin
+def fss():
+    print("发说说")
+```
+
+会输出：是否执行
+
+## 函数装饰器
 
 ### 函数核心
 
@@ -5394,7 +5683,7 @@ hello world
 
 这里的`@`，称之为语法糖，`@my_decorator` 就相当于前面的 `greet=my_decorator(greet)`语句，只不过更加简洁。因此，如果你的程序中有其它函数需要做类似的装饰，你只需在它们的上方加上@decorator就可以了，这样就大大提高了函数的重复利用和程序的可读性。
 
-#### 带参数的装饰器
+### 带参数的装饰器
 
 如果原函数 `greet()` 中有参数需要传递给装饰器，最简单的方式就是在对应的装饰器函数 `wrapper()` 上，加上相应的参数：
 
@@ -5426,7 +5715,7 @@ def celebrate(name, message):
 
 事实上，通常情况下，会把 `*args` 和 `**kwargs`，作为装饰器内部函数 `wrapper()` 的参数。
 
-```python'
+```python
 def my_decorator(func):
     def wrapper(*args, **kwargs):
         print('wrapper of decorator')
@@ -5746,6 +6035,37 @@ greet('hello world')
 execute decorator1
 execute decorator2
 hello world
+```
+
+### 从上到下装饰，从下到上执行
+
+```python
+import functools
+def my_decorator1(func):
+    print("xx1")
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print('execute decorator1')
+        func(*args, **kwargs)
+    return wrapper
+
+def my_decorator2(func):
+    print("xx2")
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print('execute decorator2')
+        func(*args, **kwargs)
+        return wrapper
+    
+@my_decorator1
+@my_decorator2
+def greet(message):
+	print(message)
+    
+"""
+xx2
+xx1
+"""
 ```
 
 ## 装饰器的用法实例

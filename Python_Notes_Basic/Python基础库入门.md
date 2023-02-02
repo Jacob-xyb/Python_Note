@@ -6304,6 +6304,102 @@ for param in params:
 
 这样一来，你可以清晰地看到，生成器并不会像迭代器一样占用大量内存，只有在被使用的时候才会调用。而且生成器在初始化的时候，并不需要运行一次生成操作，相比于 `迭代器` ，`生成器` 节省了一次生成一亿个元素的过程，因此耗时明显比 `迭代器` 短。
 
+### 生成器的创建及访问
+
+1. 生成器表达式：
+
+   ()推导式
+
+```python
+l = (i for i in range(1000) if i % 2 ==0)
+print(next(l))  # 0
+print(next(l))  # 2
+print(l.__next__())  # 4
+```
+
+2. 生成器函数：
+
+   函数中含有yield语句；函数的执行结果就是生成器对象
+
+```python
+def test():
+    print("xxx")
+    yield 1
+    print('a')
+    yield 2
+    print('b')
+    yield 3
+    print('c')
+
+g = test()
+print(g)
+print(next(g))
+print(next(g))
+
+"""
+<generator object test at 0x0000017B1F769900>
+xxx
+1
+a
+2
+"""
+```
+
+### send() 方法
+
+send(param) 指定一个参数，指定的是上一次被挂起的yield语句的返回值
+
+**next下的yield的返回值默认是 None**
+
+```python
+def test():
+    for i in range(100):
+        res = yield i
+        print(res)
+        
+g = test()
+
+print(g.__next__())
+print(g.__next__())
+```
+
+**send后的yield的返回值为指定的参数**
+
+但是send()在第一次启动生成器时，必须传入None参数，否则会报错，因为第一次没有挂起的yield。
+
+```python
+def test():
+    for i in range(100):
+        res = yield i
+        print(res)
+        
+g = test()
+
+
+print(g.send(None))  # 第一次发送时，必须是 None
+print(g.send("xxx"))
+```
+
+### close() 方法
+
+close() 方法会关闭生成器，关闭后再次调用 next 会报错。
+
+### 生成器中的return
+
+for循环会自动识别return，然后停止。（猜测内部使用了断言判断）
+
+```python
+def test():
+    for i in range(100):
+        res = yield i
+        if i == 3:
+            return
+
+g = test()
+for i in g:
+    print(i)
+```
+
 ### 生成器的进阶应用
 
 #### 验证数学恒等式

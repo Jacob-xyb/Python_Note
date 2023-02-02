@@ -41,9 +41,9 @@ def test_read02(filePath, mode):
 
 if __name__ == "__main__":
     # write
-    filePath = "test.txt"
-    context = "try try try"
-    mode = 'w'
+    # filePath = "test.txt"
+    # context = "try try try"
+    # mode = 'w'
     # test_write00(filePath, context, mode)
 
     # read

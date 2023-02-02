@@ -30,6 +30,21 @@
 
 不采用任何第三方库来读写文件
 
+流程：
+
+```python
+# 1.打开文件
+f = open(path, mode)
+# 2.读写文件
+...
+# 3.关闭文件
+f.close()
+
+# ========= 或者 =============
+with open(path, mode) as :
+    # 读写操作 ...
+```
+
 ### 写txt
 
 ```python
@@ -45,34 +60,6 @@ mode = 'w'
 f = open(filePath, mode)
 f.write(context)
 f.close()
-```
-
-结果：
-
-```python
-try try try
-```
-
----
-
-```python
-# 一次性写入多行
-f = open(filePath, mode)
-for i in range(5):
-    f.write(context)
-    f.write("\n")
-f.close()
-```
-
-结果：
-
-```python
-try try try
-try try try
-try try try
-try try try
-try try try
-
 ```
 
 ### 读txt
@@ -91,17 +78,6 @@ while line:
     context += line
     line = f.readline()
 f.close()
-```
-
-结果：
-
-```python
-try try try
-try try try
-try try try
-try try try
-try try try
-
 ```
 
 - 第二种，for循环读完
@@ -153,7 +129,7 @@ Jacob,Male,18
 """
 ```
 
-### 常用函数
+### 文件定位
 
 - **tell()**
 
@@ -161,7 +137,15 @@ Jacob,Male,18
 
 - **seek()**
 
-  文档开始的偏移字节数，注意，是字节数，所以除了二进制的场景外，其他常见均不推荐使用。
+  语法：`seek(offset, sign=0)`
 
+  offset: 根据 sign 的不同，表示不同的含义
+  
+  文档开始的偏移字节数，注意，是字节数，所以除了二进制的场景外，其他常见均不推荐使用。
+  
   最常用的是，`seek(0)` 指针移动到起始位置。
+  
+  - 0: start of stream (the deafult)，因此 offset 只能是非负的
+  - 1: current stream position，可正可负，但是只支持二进制模式
+  - 2: end of stream，offset只能是非正的，但是只支持二进制模式
 

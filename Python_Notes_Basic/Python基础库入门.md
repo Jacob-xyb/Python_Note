@@ -4069,7 +4069,7 @@ validation_check(5)
 
 这样，程序就可以在函数内部访问全局变量，并修改它的值了。
 
-另外，如果遇到函数内部局部变量和全局变量同名的情况，那么在函数内部，局部变量会覆盖全局变量，比如下面这种：
+另外，如果遇到函数内部局部变量和全局变量同名的情况，那么在函数内部，`局部变量会覆盖全局变量`，比如下面这种：
 
 ```python
 MIN_VALUE = 1
@@ -4103,6 +4103,34 @@ inner: nonlocal
 outer: local
 '''
 ```
+
+### Python-LEGB
+
+- L-Local：函数内的命名空间
+
+  作用范围：当前整个函数体范围
+
+- E-Enclosing function locals: 外部嵌套函数的命名空间
+
+  作用范围：闭包函数
+
+- G-Global：全局命名空间
+
+  作用范围：当前模块（文件）
+
+- B-Builtin：内建模块命名空间
+
+  作用范围：所有模块（文件）
+
+**注意：** Python没有块级作用域（if while for 代码块）。
+
+LEGB规则：Python按照 L -> E -> G -> B 的顺序进行查找。
+
+### 查看命名空间常见变量类型
+
+`locals()` 查看当前空间的局部变量
+
+`globals()` 查看当前空间的全局变量
 
 ## 闭包
 
@@ -4275,6 +4303,20 @@ sorted(l, key=getKey)
 ## 返回函数
 
 以函数作为返回值。
+
+## 递归函数
+
+### 求阶乘
+
+```python
+def factorial(n):
+    if n == 1:
+        return 1
+    else:
+        return n * factorial(n-1)
+    
+print(factorial(3))  # 6
+```
 
 ## 总结
 

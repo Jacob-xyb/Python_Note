@@ -50,6 +50,12 @@ if __name__ == "__main__":
     filePath = "test.txt"
     context = ""
     mode = 'r'
+    with open(filePath, mode) as f:
+        line = f.readline(8)
+        while line:
+            print(line)
+            print("偏移量", f.tell())
+            line = f.readline(6)
     # context = test_read02(filePath, mode)
     # print(context)
 
